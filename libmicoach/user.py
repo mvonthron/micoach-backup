@@ -1,9 +1,10 @@
 import logging
 
-from libmicoach import settings
-from libmicoach.services import UserProfile
-
 log = logging.getLogger(__name__)
+
+from libmicoach import settings
+from libmicoach.services import *
+from libmicoach.schedule import *
 
 class miCoachUser(object):
     
@@ -11,23 +12,22 @@ class miCoachUser(object):
     def __init__(self, email, password):
         
         #~ if settings.debug:
-        log.info('Started')
-        log.debug('Started')
-        log.warn('Started')
+        log.info('Starting initializing miCoach user')
         
         settings.email = email
         settings.password = password
         
-        self.service = UserProfile()
+        self.profile = UserProfile()
+        self.schedule = Schedule()
         
         self.getInfos()
 
     def getInfos(self):
-        infos = self.service.GetUserInfo(**{})
+        log.info('Retrieving user informations')
+        
+        infos = self.profile.GetUserInfo(**{})
         
         self.screenName = str(infos.ScreenName)
-        #~ self.firstName = str(infos.FirstName)
-        #~ self.lastName = str(infos.LastName)
         self.email = str(infos.Email)
         
     def disconnect(self):
@@ -35,14 +35,8 @@ class miCoachUser(object):
         
     def testConnection(self):
         pass
-            
-    def getWorkoutsList(self):
-        pass
         
-    def getLatestWorkout(self):
-        pass
-
     def getSchedule(self):
-        pass
+        return self.schedule
     
     
