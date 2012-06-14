@@ -15,4 +15,5 @@ class Schedule(object):
         return WorkoutList(log)
 
     def getLatestWorkout(self):
-        print Workout(self.workouts.GetLatestCompletedWorkout(**{}))
+        #~ print Workout(self.workouts.GetLatestCompletedWorkout(**{}))
+        print self.workouts.GetLatestCompletedWorkout(**{})

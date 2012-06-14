@@ -1,1 +1,1 @@
-../../client-ui/client-ui.py
+/home/gliss/Dropbox/sandbox/micoach/client-ui/v2/mainwindow.py
