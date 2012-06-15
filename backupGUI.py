@@ -8,6 +8,38 @@ from PySide import QtCore, QtGui, QtUiTools
 
 from gui.mainwindow import Ui_MainWindow
 from libmicoach.user import miCoachUser
+from libmicoach.errors import *
+
+class UserManagement(miCoachUser):
+    def __init__(self, email, passwd):
+        miCoachUser.__init__(self, email, passwd)
+
+# looks ugly
+class AsioUser(QtCore.QThread, miCoachUser):
+    LoginAction, GetLogAction = range(2)
+    loginFinished = QtCore.Signal(bool)
+
+    def __init__(self, parent=None):
+        QtCore.QThread.__init__(self, parent)
+        miCoachUser.__init__(self)
+        
+
+    def run(self):
+        if self.action == self.LoginAction:
+            email, passwd = self.args
+            try:
+                self.login(email, passwd)
+            except LoginFailed:
+                self.loginFinished.emit(False)
+            else:
+                self.loginFinished.emit(True)
+    
+    def doLogin(self, email, passwd):
+        self.args = (email, passwd)
+        self.action = self.LoginAction
+        self.start()
+    
+
 
 class MainWindow(QtGui.QMainWindow):
     ConnectView, ChooseView, DownloadView = range(3)
@@ -22,12 +54,52 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.previousButton.clicked.connect(self.abortAndGoPrevious)
         
         self.updateInterface(self.ConnectView)
-
+        
+        # move to dedicated thread
+        self.user = None
+        self.asioUser = AsioUser(self)
+        self.asioUser.loginFinished.connect(self.loginFinished)
+        
+    def loginFinished(self, success):
+        if success:
+            self.goNext()
+        else:
+            QtGui.QMessageBox.critical(self, "miCoach backup", "Login failed")
+            self.updateInterface(self.ConnectView)
+            
     def processAndGoNext(self):
-        self.updateInterface(self.currentView+1)
-    
+        # ConnectView
+        if self.currentView == self.ConnectView:
+            email  = self.ui.emailLine.text()
+            passwd = self.ui.passwordLine.text()
+            if not email or not passwd:
+                QtGui.QMessageBox.critical(self, "miCoach backup", "Email and/or password missing")
+                return
+                
+            self.asioUser.doLogin(email, passwd)
+
+            self.ui.loadingIcon.setVisible(True)
+            self.ui.loadingLabel.setVisible(True)
+
+        # ChooseView
+        elif self.currentView == self.ChooseView:
+            pass
+            
+        # DownloadView
+        elif self.currentView == self.DownloadView:
+            pass
+            
+        #~ self.goNext()
+        
     def abortAndGoPrevious(self):
+        self.goPrevious()
+    
+    def goNext(self):
+        self.updateInterface(self.currentView+1)
+        
+    def goPrevious(self):
         self.updateInterface(self.currentView-1)
+    
     
     def cancel(self):
         pass 
@@ -39,14 +111,19 @@ class MainWindow(QtGui.QMainWindow):
         self.currentView = view
         self.ui.viewPages.setCurrentIndex(self.currentView)
         
+        self.ui.loadingIcon.setVisible(False)
+        self.ui.loadingLabel.setVisible(False)
+        
         # ConnectView
         if self.currentView == self.ConnectView:
+            # buttons
             self.ui.cancelButton.setVisible(False)
             self.ui.previousButton.setVisible(False)
             self.ui.nextButton.setText("Next")
         
         # ChooseView
         elif self.currentView == self.ChooseView:
+            # buttons
             self.ui.cancelButton.setVisible(True)
             self.ui.previousButton.setVisible(True)
             self.ui.nextButton.setText("Next")
@@ -54,6 +131,7 @@ class MainWindow(QtGui.QMainWindow):
             
         # DownloadView
         elif self.currentView == self.DownloadView:
+            # buttons
             self.ui.cancelButton.setVisible(True)
             self.ui.previousButton.setVisible(True)
             self.ui.nextButton.setText("Finish")

@@ -4,6 +4,7 @@ import logging
 
 from libmicoach.custompysimplesoap.client import SoapClient
 from libmicoach import settings
+from libmicoach.errors import *
 
 log = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -52,10 +53,14 @@ class miCoachService(object):
         sys.stdout.flush()
         headers, response = loginClient.Login(return_http_headers=True, **{'email': settings.email, 'password': settings.password})
         
-        log.info("Login: %s (%s)", response.ResultStatusMessage, response.ScreenName)
-        
-        settings.authcookie =  loginClient.response['set-cookie']
-        settings.isconnected = True
+        if str(response.ResultStatusMessage) == "SUCCESS":
+            log.info("Login successful: (%s)", response.ScreenName)
+            settings.authcookie =  loginClient.response['set-cookie']
+            settings.isconnected = True
+        else:
+            log.info("Login failed: %s", response.ResultStatusMessage)
+            raise LoginFailed()
+            
 
 
 class CompletedWorkout(miCoachService):
