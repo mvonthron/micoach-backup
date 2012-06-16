@@ -7,6 +7,7 @@ import os, sys
 from PySide import QtCore, QtGui, QtUiTools
 
 from gui.mainwindow import Ui_MainWindow
+from gui.choicetable import ChoiceTable
 from libmicoach.user import miCoachUser
 from libmicoach.errors import *
 
@@ -20,7 +21,15 @@ class AsioUser(QtCore.QThread, miCoachUser):
         QtCore.QThread.__init__(self, parent)
         miCoachUser.__init__(self)
         
-        self.workoutList = None
+        self.workoutList = [{'id': 123456, 
+                             'name': "Free0014", 'date': "Wed, 06  Jun 2012 ", 
+                             'activity': "Run", 'type': "", 'time': -1, 'distance': 1234, 
+                             'hr': 130, 'pace': 30 },
+                             {'id': 456789, 
+                             'name': "30 MINUTES A DAY - 5", 'date': "Wed, 06  Jun 2012 ", 
+                             'activity': "Run", 'type': "", 'time': -1, 'distance': 1234, 
+                             'hr': 130, 'pace': 30 },
+                             ]
 
     def run(self):
         if self.action == self.LoginAction:
@@ -54,6 +63,8 @@ class MainWindow(QtGui.QMainWindow):
         QtGui.QMainWindow.__init__(self)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        self.table = ChoiceTable(self.ui.choosePage)
+        self.ui.gridLayout.addWidget(self.table, 1, 0, 1, 1)
         
         # connections
         self.ui.nextButton.clicked.connect(self.processAndGoNext)
@@ -64,6 +75,8 @@ class MainWindow(QtGui.QMainWindow):
         self.user = AsioUser(self)
         self.user.loginFinished.connect(self.loginFinished)
         self.user.getLogFinished.connect(self.getLogFinished)
+        
+        self.updateInterface(self.ChooseView)
     
     def loginFinished(self, success):
         if success:
@@ -158,8 +171,10 @@ class MainWindow(QtGui.QMainWindow):
                 self.ui.chooseInstructionsLabel.setText("Loading list of workouts")
             else:
                 self.ui.chooseInstructionsLabel.setText("Found %d workouts" % len(self.user.workoutList))
+                self.table.addLine(self.user.workoutList[0])
+                self.table.addLine(self.user.workoutList[1])
+
                 
-            
         # DownloadView
         elif self.currentView == self.DownloadView:
             # buttons
@@ -167,7 +182,7 @@ class MainWindow(QtGui.QMainWindow):
             self.ui.previousButton.setVisible(True)
             self.ui.nextButton.setText("Finish")
 
-    
+                
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)  
 
