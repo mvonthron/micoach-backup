@@ -10,19 +10,17 @@ from gui.mainwindow import Ui_MainWindow
 from libmicoach.user import miCoachUser
 from libmicoach.errors import *
 
-class UserManagement(miCoachUser):
-    def __init__(self, email, passwd):
-        miCoachUser.__init__(self, email, passwd)
-
 # looks ugly
 class AsioUser(QtCore.QThread, miCoachUser):
     LoginAction, GetLogAction = range(2)
     loginFinished = QtCore.Signal(bool)
+    getLogFinished = QtCore.Signal(bool)
 
     def __init__(self, parent=None):
         QtCore.QThread.__init__(self, parent)
         miCoachUser.__init__(self)
         
+        self.workoutList = None
 
     def run(self):
         if self.action == self.LoginAction:
@@ -33,13 +31,21 @@ class AsioUser(QtCore.QThread, miCoachUser):
                 self.loginFinished.emit(False)
             else:
                 self.loginFinished.emit(True)
+                
+        elif self.action == self.GetLogAction:
+            self.workoutList = self.getSchedule().getWorkoutList()
+            self.getLogFinished.emit(True)
     
     def doLogin(self, email, passwd):
         self.args = (email, passwd)
         self.action = self.LoginAction
         self.start()
     
-
+    def doGetLog(self):
+        self.args = None
+        self.action = self.GetLogAction
+        self.start()
+    
 
 class MainWindow(QtGui.QMainWindow):
     ConnectView, ChooseView, DownloadView = range(3)
@@ -54,18 +60,25 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.previousButton.clicked.connect(self.abortAndGoPrevious)
         
         self.updateInterface(self.ConnectView)
-        
-        # move to dedicated thread
-        self.user = None
-        self.asioUser = AsioUser(self)
-        self.asioUser.loginFinished.connect(self.loginFinished)
-        
+
+        self.user = AsioUser(self)
+        self.user.loginFinished.connect(self.loginFinished)
+        self.user.getLogFinished.connect(self.getLogFinished)
+    
     def loginFinished(self, success):
         if success:
+            self.user.doGetLog()
             self.goNext()
         else:
             QtGui.QMessageBox.critical(self, "miCoach backup", "Login failed")
             self.updateInterface(self.ConnectView)
+    
+    def getLogFinished(self, success):
+        if success:
+            self.updateInterface(self.ChooseView)
+        else:
+            QtGui.QMessageBox.critical(self, "miCoach backup", "Could not retrieve workout list")
+            #~ self.updateInterface(self.ChooseView)
             
     def processAndGoNext(self):
         # ConnectView
@@ -75,8 +88,8 @@ class MainWindow(QtGui.QMainWindow):
             if not email or not passwd:
                 QtGui.QMessageBox.critical(self, "miCoach backup", "Email and/or password missing")
                 return
-                
-            self.asioUser.doLogin(email, passwd)
+        
+            self.user.doLogin(email, passwd)
 
             self.ui.loadingIcon.setVisible(True)
             self.ui.loadingLabel.setVisible(True)
@@ -88,10 +101,23 @@ class MainWindow(QtGui.QMainWindow):
         # DownloadView
         elif self.currentView == self.DownloadView:
             pass
-            
-        #~ self.goNext()
         
     def abortAndGoPrevious(self):
+        if self.user.isRunning():
+            self.user.terminate()
+        
+        # ConnectView
+        if self.currentView == self.ConnectView:
+            self.user.logout()
+        
+        # ChooseView
+        elif self.currentView == self.ChooseView:
+            pass
+            
+        # DownloadView
+        elif self.currentView == self.DownloadView:
+            pass
+        
         self.goPrevious()
     
     def goNext(self):
@@ -128,6 +154,11 @@ class MainWindow(QtGui.QMainWindow):
             self.ui.previousButton.setVisible(True)
             self.ui.nextButton.setText("Next")
 
+            if not self.user.workoutList:
+                self.ui.chooseInstructionsLabel.setText("Loading list of workouts")
+            else:
+                self.ui.chooseInstructionsLabel.setText("Found %d workouts" % len(self.user.workoutList))
+                
             
         # DownloadView
         elif self.currentView == self.DownloadView:

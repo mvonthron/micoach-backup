@@ -32,7 +32,7 @@ class miCoachUser(object):
         self.email = str(infos.Email)
 
         
-    def disconnect(self):
+    def logout(self):
         pass
         
     def testConnection(self):
