@@ -26,7 +26,7 @@ class WorkoutList(object):
             for w in data.WorkoutLog:
                 self.content.append({'id': int(w.WorkoutId), 
                                      'name': str(w.Name), 
-                                     'date': w.StartDate, 
+                                     'date': str(w.StartDate), 
                                      'activity': str(w.ActivityType), 
                                      'type': str(w.CompletedWorkoutType),
                                      'time': -1,
@@ -43,6 +43,10 @@ class WorkoutList(object):
     def __len__(self):
         return len(self.content)
     
+    def __iter__(self):
+        for line in self.content:
+            yield line
+    
     def __sub__(self, other):
         """difference between two workout lists"""
         pass
@@ -52,7 +56,6 @@ class WorkoutList(object):
         return "WorkoutList: contains (%d) workouts" % len(self.content)
         
     def display(self):
-        
         for entry in self.content:
             print "%8d\t%-20s\t%10s\t%-5s\t%-8s\t%8s\t%d\t%d\t%.2f" % (entry['id'], entry['name'], entry['date'], 
                                                         entry['activity'], entry['type'], entry['time'],
