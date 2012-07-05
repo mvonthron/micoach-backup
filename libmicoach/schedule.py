@@ -8,12 +8,11 @@ class Schedule(object):
     
     def getWorkoutList(self):
         log = self.workouts.GetWorkoutLog(**{})
-        
-        for w in log.WorkoutLog:
-            print w.FormattedStartDate, "-", w.Name, w.ActivityType, w.CompletedWorkoutType
-            
         return WorkoutList(log)
 
     def getLatestWorkout(self):
-        #~ print Workout(self.workouts.GetLatestCompletedWorkout(**{}))
-        print self.workouts.GetLatestCompletedWorkout(**{})
+        w = self.workouts.GetLatestCompletedWorkout(**{})
+        return Workout(w)
+
+    def getWorkout(self, id):
+        return Workout(self.workouts.GetCompletedWorkoutById(**{'completedWorkoutId': id}))

@@ -11,9 +11,10 @@ from gui.choicetable import ChoiceTable
 from libmicoach.user import miCoachUser
 from libmicoach.errors import *
 
-# looks ugly
+
 class AsioUser(QtCore.QThread, miCoachUser):
     LoginAction, GetLogAction, DownloadAction = range(3)
+    
     loginFinished = QtCore.Signal(bool)
     getLogFinished = QtCore.Signal(bool)
     downloadFileFinished = QtCore.Signal(bool)
@@ -164,6 +165,7 @@ class MainWindow(QtGui.QMainWindow):
             self.ui.cancelButton.setVisible(False)
             self.ui.previousButton.setVisible(False)
             self.ui.nextButton.setText("Next")
+            self.resize(480, 205)
         
         # ChooseView
         elif self.currentView == self.ChooseView:
@@ -180,6 +182,7 @@ class MainWindow(QtGui.QMainWindow):
                 self.ui.chooseInstructionsLabel.setText("Found %d workouts" % len(self.user.workoutList))
                 for workout in self.user.workoutList:
                     self.table.addLine(workout)
+                self.resize(1000, 450)
                 
         # DownloadView
         elif self.currentView == self.DownloadView:
@@ -188,7 +191,7 @@ class MainWindow(QtGui.QMainWindow):
             self.ui.previousButton.setVisible(True)
             self.ui.nextButton.setText("Finish")
 
-                
+
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)  
 

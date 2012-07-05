@@ -30,6 +30,7 @@ class ChoiceTable(QtGui.QTableWidget):
         self.horizontalHeaderItem(5).setText("ID")
         self.setColumnHidden(5, True)
 
+        self.verticalHeader().setVisible(False)
         self.horizontalHeader().setVisible(True)
 
         

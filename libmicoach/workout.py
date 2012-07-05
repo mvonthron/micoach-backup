@@ -4,16 +4,14 @@ from libmicoach.custompysimplesoap.simplexml import *
 
 class Workout(object):
     def __init__(self, content):
-        pass
-        #~ if isinstance(content, SimpleXMLElement):
-            #~ self.xml = content
-        #~ else:
-            #~ self.xml = None
-            #~ 
+        
+        if isinstance(content, SimpleXMLElement):
+            self.xml = content
+        else:
+            self.xml = None
+            
         #~ self.id = self.xml.WorkoutId
         #~ self.name = self.xml.Name
-        #~ self.date = StartDate
-        
 
     
 class WorkoutList(object):
