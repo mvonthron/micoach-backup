@@ -30,9 +30,7 @@ No installation needed. Just move the program wherever you like.
 2. Enter your *miCoach* credentials
 3. Select workouts to be downloaded (the tool looks for newly added workouts only download them by default)
 4. Wait a few seconds, you're all done!
-<!--
-By default, workouts go to `run-folder/data/<username>` and 
--->
+
 
 Screenshots
 ----
