@@ -6,7 +6,7 @@ miCoach Backup
 Description
 ----
 
-**miCoach backup** contains two things :
+**miCoach backup** contains two things:
 
   - the beginning of a Python implementation of *Adidas miCoach* API 
   - a small GUI for selecting and saving you workouts

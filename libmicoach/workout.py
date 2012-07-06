@@ -1,3 +1,4 @@
+from datetime import datetime
 
 from libmicoach.simplexml import *
 
@@ -40,18 +41,28 @@ class WorkoutList(object):
         # try from xml WorkoutLog
         try:
             for w in data.WorkoutLog:
+                start = datetime.datetime.strptime(str(w.StartDate), "%Y-%m-%dT%H:%M:%S")
+                end   = datetime.datetime.strptime(str(w.StopDate), "%Y-%m-%dT%H:%M:%S")
+
+                d = int(w.Distance.Value)
+                if d > 1000:
+                    distance = "%.1f km" % (d/1000.)
+                else:
+                    distance = "%d m" % d
+                
                 self.content.append({'id': int(w.WorkoutId), 
                                      'name': str(w.Name), 
-                                     'date': str(w.StartDate), 
+                                     'date': str(start), 
                                      'activity': str(w.ActivityType), 
                                      'type': str(w.CompletedWorkoutType),
-                                     'time': -1,
-                                     'distance': int(w.Distance.Value),
+                                     'time': str(end-start),
+                                     'distance': distance,
                                      'hr': int(w.AvgHR.Value),
                                      'pace': float(w.AvgPace.Value)
                                      })
         except AttributeError as e:
-            print e.strerror
+            print e
+
         # try from array of dict values [{id, name, date}, {}]
     
         # try from folder

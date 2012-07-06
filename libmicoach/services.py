@@ -1,15 +1,11 @@
 import httplib, urllib
 import sys
 import logging
+log = logging.getLogger(__name__)
 
 from libmicoach import settings
 from libmicoach.errors import *
 from libmicoach.simplexml import *
-
-
-log = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO)
-
 
 class miCoachService(object):
     def __init__(self, service):
@@ -33,7 +29,7 @@ class miCoachService(object):
     
     def GET(self, action, *args, **kwargs):
         params = urllib.urlencode(kwargs)
-        log.info("GET %s/%s?%s" % (self.location, action, params))
+        log.debug("GET %s/%s?%s" % (self.location, action, params))
         
         self.http.request("GET", ("%s/%s?%s") % (self.location, action, params), headers={'cookie': settings.authcookie})
         data = self.http.getresponse().read()
@@ -64,7 +60,7 @@ class miCoachService(object):
             settings.authcookie =  response.getheader('set-cookie')
             settings.isconnected = True
         else:
-            log.info("Login failed: %s", xml.ResultStatusMessage)
+            log.warning("Login failed: %s", xml.ResultStatusMessage)
             raise LoginFailed()
 
 class CompletedWorkout(miCoachService):
