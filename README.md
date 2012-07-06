@@ -42,7 +42,7 @@ Screenshots
 What else
 ----
 
-**miCoach backup** is being actively developped but is usable for your backups.
+**miCoach backup** is being actively developped is *almost ready* for use.
 
 The API let's you do pretty much everything the [website](http://www.micoach.com/) can do and even a lot more. So far you will only be able to save your workouts on you computer.
 
