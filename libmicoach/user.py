@@ -9,7 +9,6 @@ from libmicoach.errors import *
 
 class miCoachUser(object):
     def __init__(self, email=None, password=None):
-        #~ if settings.debug:
         log.info('Starting initializing miCoach user')
         if not email is None and not password is None:
             self.login(email, password)
@@ -22,14 +21,14 @@ class miCoachUser(object):
         self.profile = UserProfile()
         self.schedule = Schedule()
         
-        self.getInfos()
+        self.getProfile()
         
-    def getInfos(self):
+    def getProfile(self):
         log.info('Retrieving user informations')
         
-        infos = self.profile.GetUserInfo()
-        self.screenName = str(infos.ScreenName)
-        self.email = str(infos.Email)
+        profile = self.profile.GetUserProfile()
+        self.screenName = str(profile.ScreenName)
+        self.email = str(profile.Email)
 
         
     def logout(self):

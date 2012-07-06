@@ -1,5 +1,5 @@
 
-from libmicoach.custompysimplesoap.simplexml import *
+from libmicoach.simplexml import *
 
 
 class Workout(object):
