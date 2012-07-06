@@ -5,9 +5,61 @@ import logging
 from libmicoach.custompysimplesoap.client import SoapClient
 from libmicoach import settings
 from libmicoach.errors import *
+from libmicoach.custompysimplesoap.simplexml import *
+
 
 log = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
+
+
+class miCoachService2(object):
+    
+    def __init__(self, location):
+        self.location = location
+        self.http = httplib.HTTPConnection("www.micoach.com")
+
+        if not settings.isconnected is True:
+            self.connect()
+    
+    def __getattr__(self, attr):
+        return lambda self=self, *args, **kwargs: self.call(attr,*args,**kwargs)
+
+    def call(self, method, *args, **kwargs):
+        pass
+    
+    def GET(self, action, *args, **kwargs):
+        params = urllib.urlencode(kwargs)
+        print params
+        self.http.request("GET", ("%s/%s?%s") % (self.location, action, params), headers={'cookie', settings.authcookie})
+        data = self.http.getresponse().read()
+    
+    def POST(self, action, *args, **kwargs):
+        pass
+    
+    def connect(self):
+        log.info("Initializing connection")
+        
+        params = urllib.urlencode({'password':settings.password, 'email':settings.email, 'TimeZoneInfo': settings.timezoneinfo})
+        headers ={"Content-type": "application/x-www-form-urlencoded",
+                  "Connection": "keep-alive",
+                  "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+                 }
+        https = httplib.HTTPSConnection("www.adidas.com", 443)
+        https.request("POST", "/ca/micoach/login.aspx", params, headers)
+        http_authcookie = https.getresponse().getheader('set-cookie')
+        
+        params = urllib.urlencode({'password':settings.password, 'email':settings.email})
+        self.http.request("GET", "/v2.0/Services/UserProfileWs.asmx/Login?"+params, headers={'cookie':http_authcookie})
+        response = self.http.getresponse()
+        xml = SimpleXMLElement(text=response.read())
+
+        if str(xml.ResultStatusMessage) == "SUCCESS":
+            log.info("Login successful: (%s)", xml.ScreenName)
+            settings.authcookie =  response.getheader('set-cookie')
+            settings.isconnected = True
+        else:
+            log.info("Login failed: %s", xml.ResultStatusMessage)
+            raise LoginFailed()
 
 class miCoachService(object):
     params = {}
