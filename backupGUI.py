@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 
 import logging
+log = logging.getLogger(__name__)
+
 logging.basicConfig(level=logging.INFO)
+
 
 import os, sys
 from PySide import QtCore, QtGui, QtUiTools
@@ -17,8 +20,8 @@ class AsioUser(QtCore.QThread, miCoachUser):
     
     loginFinished = QtCore.Signal(bool)
     getLogFinished = QtCore.Signal(bool)
-    downloadFileFinished = QtCore.Signal(bool)
-    downloadFinished = QtCore.Signal(bool)
+    downloadFileFinished = QtCore.Signal(int)
+    downloadAllFinished = QtCore.Signal(bool)
 
     def __init__(self, parent=None):
         QtCore.QThread.__init__(self, parent)
@@ -41,8 +44,13 @@ class AsioUser(QtCore.QThread, miCoachUser):
             self.getLogFinished.emit(True)
             
         elif self.action == self.DownloadAction:
-            pass
+            
+            for id in self.args:
+                self.getSchedule().getWorkout(id)
+                self.downloadFileFinished.emit(id)
     
+            self.downloadAllFinished.emit(True)
+
     # calls
     def doLogin(self, email, passwd):
         self.args = (email, passwd)
@@ -55,6 +63,7 @@ class AsioUser(QtCore.QThread, miCoachUser):
         self.start()
         
     def doDownload(self, ids):
+        log.info("About to download ids %s", str(ids))
         self.args = ids
         self.action = self.DownloadAction
         self.start()
@@ -80,8 +89,13 @@ class MainWindow(QtGui.QMainWindow):
         self.user = AsioUser(self)
         self.user.loginFinished.connect(self.loginFinished)
         self.user.getLogFinished.connect(self.getLogFinished)
+        self.user.downloadFileFinished.connect(self.downloadFileFinished)
+        self.user.downloadAllFinished.connect(self.downloadAllFinished)
         
         self.updateInterface(self.ConnectView)
+        
+        self.toBeDownloaded = []
+        self.alreadyDownloaded = []
     
     def loginFinished(self, success):
         if success:
@@ -97,7 +111,18 @@ class MainWindow(QtGui.QMainWindow):
         else:
             QtGui.QMessageBox.critical(self, "miCoach backup", "Could not retrieve workout list")
             #~ self.updateInterface(self.ChooseView)
-            
+
+    def downloadFileFinished(self, id):
+        self.alreadyDownloaded.append(id)
+        log.info("Already downloaded: %s" % str(self.alreadyDownloaded))
+        
+        self.updateInterface(self.currentView)
+    
+    def downloadAllFinished(self, success):
+        if success:
+            log.info("All workouts downloaded")
+
+    
     def processAndGoNext(self):
         # ConnectView
         if self.currentView == self.ConnectView:
@@ -114,12 +139,21 @@ class MainWindow(QtGui.QMainWindow):
 
         # ChooseView
         elif self.currentView == self.ChooseView:
-            ids = self.table.getCheckedId()
-            self.user.doDownload(ids)
+            self.toBeDownloaded = self.table.getCheckedId()
+            self.alreadyDownloaded = []
             
+            if not len(self.toBeDownloaded):
+                QtGui.QMessageBox.critical(self, "miCoach backup", "No workout selected")
+            else:
+                self.user.doDownload(self.toBeDownloaded)
+                self.goNext()
+
         # DownloadView
         elif self.currentView == self.DownloadView:
-            pass
+            # exiting
+            if self.user.isRunning():
+                self.user.terminate()
+            QtCore.QCoreApplication.instance().quit()
         
     def abortAndGoPrevious(self):
         if self.user.isRunning():
@@ -145,9 +179,14 @@ class MainWindow(QtGui.QMainWindow):
     def goPrevious(self):
         self.updateInterface(self.currentView-1)
     
-    
     def cancel(self):
         pass 
+        
+    def centerInterface(self):
+        geo = self.frameGeometry()
+        center = QtGui.QDesktopWidget().availableGeometry().center()
+        geo.moveCenter(center)
+        self.move(geo.topLeft())
         
     def updateInterface(self, view):
         if not view in (self.ConnectView, self.ChooseView, self.DownloadView):
@@ -166,6 +205,7 @@ class MainWindow(QtGui.QMainWindow):
             self.ui.previousButton.setVisible(False)
             self.ui.nextButton.setText("Next")
             self.resize(480, 205)
+            self.centerInterface()
         
         # ChooseView
         elif self.currentView == self.ChooseView:
@@ -183,13 +223,24 @@ class MainWindow(QtGui.QMainWindow):
                 for workout in self.user.workoutList:
                     self.table.addLine(workout)
                 self.resize(1000, 450)
-                
+                self.centerInterface()
+                        
         # DownloadView
         elif self.currentView == self.DownloadView:
             # buttons
             self.ui.cancelButton.setVisible(True)
             self.ui.previousButton.setVisible(True)
             self.ui.nextButton.setText("Finish")
+            
+            # progress
+            self.ui.progressBar.setValue(100*len(self.alreadyDownloaded)/len(self.toBeDownloaded))
+            if len(self.alreadyDownloaded) < len(self.toBeDownloaded):
+                self.ui.progressLabel.setText("Downloading file %d of %d" % (len(self.alreadyDownloaded)+1, len(self.toBeDownloaded)))
+            else:
+                self.ui.progressLabel.setText("All files downloaded")
+            
+            self.resize(480, 205)
+            self.centerInterface()
 
 
 if __name__ == '__main__':
