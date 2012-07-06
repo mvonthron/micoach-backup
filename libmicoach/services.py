@@ -12,10 +12,10 @@ log = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
 
-class miCoachService2(object):
+class miCoachService(object):
     
-    def __init__(self, location):
-        self.location = location
+    def __init__(self, service):
+        self.location = ("/v2.0/Services/%s") % service
         self.http = httplib.HTTPConnection("www.micoach.com")
 
         if not settings.isconnected is True:
@@ -25,13 +25,23 @@ class miCoachService2(object):
         return lambda self=self, *args, **kwargs: self.call(attr,*args,**kwargs)
 
     def call(self, method, *args, **kwargs):
-        pass
+        if settings.isconnected:
+            try:
+                data = self.GET(method, **kwargs)
+            except Exception as e:
+                print e.strerror
+            finally:
+                return SimpleXMLElement(data)
+
     
     def GET(self, action, *args, **kwargs):
         params = urllib.urlencode(kwargs)
         print params
-        self.http.request("GET", ("%s/%s?%s") % (self.location, action, params), headers={'cookie', settings.authcookie})
+        print ("%s/%s?%s") % (self.location, action, params)
+        
+        self.http.request("GET", ("%s/%s?%s") % (self.location, action, params), headers={'cookie': settings.authcookie})
         data = self.http.getresponse().read()
+        return data
     
     def POST(self, action, *args, **kwargs):
         pass
@@ -61,7 +71,7 @@ class miCoachService2(object):
             log.info("Login failed: %s", xml.ResultStatusMessage)
             raise LoginFailed()
 
-class miCoachService(object):
+class miCoachService_bak(object):
     params = {}
     client = None
     
@@ -117,30 +127,24 @@ class miCoachService(object):
 
 class CompletedWorkout(miCoachService):
     def __init__(self):
-        miCoachService.__init__(self, "http://www.micoach.com/v2.0/Services/CompletedWorkoutWS.asmx", 
-                                      "http://adidas.com/micoach/v4/")
+        miCoachService.__init__(self, "CompletedWorkoutWS.asmx")
 
 class UserProfile(miCoachService):
     def __init__(self):
-        miCoachService.__init__(self, "http://www.micoach.com/v2.0/Services/UserProfileWS.asmx", 
-                                      "http://adidas.com/micoach/v4/")
+        miCoachService.__init__(self, "UserProfileWS.asmx")
 
 class SyncAPI(miCoachService):
     def __init__(self):
-        miCoachService.__init__(self, "http://www.micoach.com/v2.0/Services/SyncAPIWS.asmx", 
-                                      "http://adidas.com/micoach/v3/")
+        miCoachService.__init__(self, "SyncAPIWS.asmx")
 
 class Calendar(miCoachService):
     def __init__(self):
-        miCoachService.__init__(self, "http://www.micoach.com/v2.0/Services/CalendarWS.asmx", 
-                                      "http://adidas.com/micoach/v3/")
+        miCoachService.__init__(self, "CalendarWS.asmx")
 
 class Route(miCoachService):
     def __init__(self):
-        miCoachService.__init__(self, "http://www.micoach.com/v2.0/Services/RouteWS.asmx", 
-                                      "http://adidas.com/micoach/v3/")
+        miCoachService.__init__(self, "RouteWS.asmx")
 
 class Activity(miCoachService):
     def __init__(self):
-        miCoachService.__init__(self, "http://www.micoach.com/v2.0/Services/ActivityWS.asmx", 
-                                      "http://adidas.com/micoach/v4/")
+        miCoachService.__init__(self, "ActivityWS.asmx")

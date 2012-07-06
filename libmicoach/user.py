@@ -27,7 +27,7 @@ class miCoachUser(object):
     def getInfos(self):
         log.info('Retrieving user informations')
         
-        infos = self.profile.GetUserInfo(**{})
+        infos = self.profile.GetUserInfo()
         self.screenName = str(infos.ScreenName)
         self.email = str(infos.Email)
 
