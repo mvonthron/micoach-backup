@@ -13,7 +13,7 @@ from gui.mainwindow import Ui_MainWindow
 from gui.choicetable import ChoiceTable
 from libmicoach.user import miCoachUser
 from libmicoach.errors import *
-
+from libmicoach import settings
 
 class AsioUser(QtCore.QThread, miCoachUser):
     LoginAction, GetLogAction, DownloadAction = range(3)
@@ -69,6 +69,32 @@ class AsioUser(QtCore.QThread, miCoachUser):
         self.start()
     
 
+class Storage(object):
+    def __init__(self, username):
+        if settings.use_user_folder:
+            userFolder = "%s/" % username
+        else:
+            userFolder = ""
+            
+        self.csvPath = "%s/%s/" % (settings.root_folder, userFolder)
+        self.xmlPath = "%s/%s/xml" % (settings.root_folder, userFolder)
+        
+        self.checkFolder()
+    
+    def checkFolder(self):
+        if not os.path.exists(self.csvPath):
+            os.makedirs(self.csvPath)
+        
+        if settings.save_raw_xml:
+            if not os.path.exists(self.xmlPath):
+                os.makedirs(self.xmlPath)
+    
+    def addWorkout(self, workout, check_exists=False):
+        if settings.save_raw_xml:
+            filename = "%s/%s - %s.xml" % (self.xmlPath, workout.date, workout.name)
+            workout.writeXml(filename)
+
+
 class MainWindow(QtGui.QMainWindow):
     ConnectView, ChooseView, DownloadView = range(3)
     ProgressBarDownloadRatio = 70
@@ -86,18 +112,19 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.nextButton.clicked.connect(self.processAndGoNext)
         self.ui.previousButton.clicked.connect(self.abortAndGoPrevious)
         
-        self.updateInterface(self.ConnectView)
-
         self.user = AsioUser(self)
         self.user.loginFinished.connect(self.loginFinished)
         self.user.getLogFinished.connect(self.getLogFinished)
         self.user.downloadFileFinished.connect(self.downloadFileFinished)
         self.user.downloadAllFinished.connect(self.downloadAllFinished)
         
-        self.updateInterface(self.ConnectView)
+        self.storage = None
         
         self.toBeDownloaded = []
         self.alreadyDownloaded = []
+        
+        self.updateInterface(self.ConnectView)
+
     
     def loginFinished(self, success):
         if success:
@@ -109,6 +136,7 @@ class MainWindow(QtGui.QMainWindow):
     
     def getLogFinished(self, success):
         if success:
+            self.storage = Storage(self.user.screenName)
             self.updateInterface(self.ChooseView)
         else:
             QtGui.QMessageBox.critical(self, "miCoach backup", "Could not retrieve workout list")
@@ -129,7 +157,8 @@ class MainWindow(QtGui.QMainWindow):
             i = 0
             for w in workouts:
                 i += 1
-                w.writeXml("data/%s/xml/%s - %s.xml" % (self.user.screenName, w.date, w.name))
+                #~ w.writeXml("data/%s/xml/%s - %s.xml" % (self.user.screenName, w.date, w.name))
+                self.storage.addWorkout(w)
 
                 # counting from download achieved (e.g. 70%)
                 self.ui.progressBar.setValue(self.ProgressBarDownloadRatio + self.ProgressBarSaveRatio*(i/len(workouts)))
@@ -237,10 +266,12 @@ class MainWindow(QtGui.QMainWindow):
             else:
                 self.ui.chooseInstructionsIcon.setShown(False)
                 self.ui.chooseInstructionsLabel.setText("Found %d workouts" % len(self.user.workoutList))
-                for workout in self.user.workoutList:
-                    self.table.addLine(workout)
                 self.resize(1000, 450)
                 self.centerInterface()
+                
+                for workout in self.user.workoutList:
+                    self.table.addLine(workout)
+                
                         
         # DownloadView
         elif self.currentView == self.DownloadView:
