@@ -26,15 +26,14 @@ class miCoachService(object):
         if settings.isconnected:
             try:
                 data = self.GET(method, **kwargs)
+                return SimpleXMLElement(data)
             except Exception as e:
                 print e.strerror
-            finally:
-                return SimpleXMLElement(data)
 
     
     def GET(self, action, *args, **kwargs):
         params = urllib.urlencode(kwargs)
-        log.info("GET %s/%s?%s") % (self.location, action, params)
+        log.info("GET %s/%s?%s" % (self.location, action, params))
         
         self.http.request("GET", ("%s/%s?%s") % (self.location, action, params), headers={'cookie': settings.authcookie})
         data = self.http.getresponse().read()
