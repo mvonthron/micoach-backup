@@ -21,7 +21,7 @@ class AsioUser(QtCore.QThread, miCoachUser):
     loginFinished = QtCore.Signal(bool)
     getLogFinished = QtCore.Signal(bool)
     downloadFileFinished = QtCore.Signal(int)
-    downloadAllFinished = QtCore.Signal(bool)
+    downloadAllFinished = QtCore.Signal(object)
 
     def __init__(self, parent=None):
         QtCore.QThread.__init__(self, parent)
@@ -44,12 +44,12 @@ class AsioUser(QtCore.QThread, miCoachUser):
             self.getLogFinished.emit(True)
             
         elif self.action == self.DownloadAction:
-            
+            workouts = []
             for id in self.args:
-                self.getSchedule().getWorkout(id)
+                workouts.append(self.getSchedule().getWorkout(id))
                 self.downloadFileFinished.emit(id)
     
-            self.downloadAllFinished.emit(True)
+            self.downloadAllFinished.emit(workouts)
 
     # calls
     def doLogin(self, email, passwd):
@@ -71,6 +71,8 @@ class AsioUser(QtCore.QThread, miCoachUser):
 
 class MainWindow(QtGui.QMainWindow):
     ConnectView, ChooseView, DownloadView = range(3)
+    ProgressBarDownloadRatio = 70
+    ProgressBarSaveRatio = 100 - ProgressBarDownloadRatio
     
     def __init__(self, *args):
         QtGui.QMainWindow.__init__(self)
@@ -118,9 +120,23 @@ class MainWindow(QtGui.QMainWindow):
         
         self.updateInterface(self.currentView)
     
-    def downloadAllFinished(self, success):
-        if success:
-            log.info("All workouts downloaded")
+    def downloadAllFinished(self, workouts):
+        if len(workouts):
+            log.info("All workouts downloaded (%d)" % len(workouts))
+
+            self.ui.progressLabel.setText("All files downloaded, saving")
+            
+            i = 0
+            for w in workouts:
+                i += 1
+                w.writeXml("data/%s/xml/%s - %s.xml" % (self.user.screenName, w.date, w.name))
+
+                # counting from download achieved (e.g. 70%)
+                self.ui.progressBar.setValue(self.ProgressBarDownloadRatio + self.ProgressBarSaveRatio*(i/len(workouts)))
+
+            log.info("All workouts written")
+            self.ui.progressLabel.setText("All files saved")
+            
 
     
     def processAndGoNext(self):
@@ -150,6 +166,7 @@ class MainWindow(QtGui.QMainWindow):
 
         # DownloadView
         elif self.currentView == self.DownloadView:
+            log.info("Bye")
             # exiting
             if self.user.isRunning():
                 self.user.terminate()
@@ -233,7 +250,7 @@ class MainWindow(QtGui.QMainWindow):
             self.ui.nextButton.setText("Finish")
             
             # progress
-            self.ui.progressBar.setValue(100*len(self.alreadyDownloaded)/len(self.toBeDownloaded))
+            self.ui.progressBar.setValue(self.ProgressBarDownloadRatio*len(self.alreadyDownloaded)/len(self.toBeDownloaded))
             if len(self.alreadyDownloaded) < len(self.toBeDownloaded):
                 self.ui.progressLabel.setText("Downloading file %d of %d" % (len(self.alreadyDownloaded)+1, len(self.toBeDownloaded)))
             else:

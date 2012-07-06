@@ -7,12 +7,30 @@ class Workout(object):
         
         if isinstance(content, SimpleXMLElement):
             self.xml = content
+
+            try:
+                self.id = self.xml.CompletedWorkoutID
+            except AttributeError:
+                try:
+                    self.id = self.xml.WorkoutID
+                except:
+                    pass
+
+            self.date = self.xml.StartDateTime
+            self.name = self.xml.WorkoutName
+
         else:
             self.xml = None
             
-        #~ self.id = self.xml.WorkoutId
-        #~ self.name = self.xml.Name
 
+        
+    def writeCsv(self, filename):
+        pass
+    
+    def writeXml(self, filename):
+        file = open(filename, "w")
+        file.write(self.xml.as_xml())
+        file.close()
     
 class WorkoutList(object):
     

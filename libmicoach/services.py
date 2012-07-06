@@ -16,7 +16,7 @@ class miCoachService(object):
         self.location = ("/v2.0/Services/%s") % service
         self.http = httplib.HTTPConnection("www.micoach.com")
 
-        if not settings.isconnected is True:
+        if not settings.isconnected:
             self.connect()
     
     def __getattr__(self, attr):
