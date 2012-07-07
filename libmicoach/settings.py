@@ -21,3 +21,4 @@ save_csv = True
 save_raw_xml = True
 root_folder = "data"
 use_user_folder = True
+csv_format = "{time}; {heart}; {calories}; {pace};"

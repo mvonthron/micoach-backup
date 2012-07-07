@@ -67,7 +67,6 @@ class AsioUser(QtCore.QThread, miCoachUser):
         self.args = ids
         self.action = self.DownloadAction
         self.start()
-    
 
 class Storage(object):
     def __init__(self, username):
@@ -91,8 +90,9 @@ class Storage(object):
     
     def addWorkout(self, workout, check_exists=False):
         if settings.save_raw_xml:
-            filename = "%s/%s - %s.xml" % (self.xmlPath, workout.date, workout.name)
-            workout.writeXml(filename)
+            workout.writeXml("%s/%s - %s.xml" % (self.xmlPath, workout.date, workout.name))
+            
+        workout.writeCsv("%s/%s - %s.csv" % (self.csvPath, workout.date, workout.name))
 
 
 class MainWindow(QtGui.QMainWindow):

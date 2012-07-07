@@ -30,7 +30,6 @@ class miCoachUser(object):
         self.screenName = str(profile.ScreenName)
         self.email = str(profile.Email)
 
-        
     def logout(self):
         pass
         

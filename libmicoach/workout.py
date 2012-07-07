@@ -1,7 +1,15 @@
 from datetime import datetime
 
 from libmicoach.simplexml import *
+from libmicoach import settings
 
+format = lambda p: settings.csv_format.format(time=p.TimeFromStart, intervalno=p.IntervalOrderNumber, 
+                                               distance=p.Distance, heart=p.HeartRate,
+                                               calories=p.Calories, pace=p.Pace,
+                                               rate=p.StrideRate, steps=p.Steps,
+                                               longitude=p.Longitude, latitude=p.Latitude,
+                                               altitude=p.Altitude
+                                               )
 
 class Workout(object):
     def __init__(self, content):
@@ -26,7 +34,11 @@ class Workout(object):
 
         
     def writeCsv(self, filename):
-        pass
+        lines = [format(point) for point in self.xml.CompletedWorkoutDataPoint]
+        
+        file = open(filename, "w")
+        file.write("\n".join(lines))
+        file.close()
     
     def writeXml(self, filename):
         file = open(filename, "w")
@@ -66,7 +78,7 @@ class WorkoutList(object):
         # try from array of dict values [{id, name, date}, {}]
     
         # try from folder
-        
+    
     def __len__(self):
         return len(self.content)
     
@@ -84,7 +96,7 @@ class WorkoutList(object):
         
     def display(self):
         for entry in self.content:
-            print "%8d\t%-20s\t%10s\t%-5s\t%-8s\t%8s\t%d\t%d\t%.2f" % (entry['id'], entry['name'], entry['date'], 
+            print "%8d\t%-20s\t%10s\t%-5s\t%-8s\t%8s\t%s\t%d\t%.2f" % (entry['id'], entry['name'], entry['date'], 
                                                         entry['activity'], entry['type'], entry['time'],
                                                         entry['distance'], entry['hr'], entry['pace'])
     
