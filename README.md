@@ -1,7 +1,7 @@
 miCoach Backup
 =====
 
-**miCoach backup** is a tool to save your workouts from [Adidas miCoach] to your computer
+**miCoach backup** is a tool to save your workouts from [Adidas miCoach] to your computer.
 
 Description
 ----
@@ -28,7 +28,7 @@ No installation needed. Just move the program wherever you like.
 
 1. Run `backupGUI.py`
 2. Enter your *miCoach* credentials
-3. Select workouts to be downloaded (the tool looks for newly added workouts only download them by default)
+3. Select workouts to be downloaded (by default the tool only looks for newly added workouts )
 4. Wait a few seconds, you're all done!
 
 

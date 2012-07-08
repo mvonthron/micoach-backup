@@ -16,6 +16,14 @@ from libmicoach.errors import *
 from libmicoach import settings
 
 class AsioUser(QtCore.QThread, miCoachUser):
+    """Qt-threaded extension of miCoachUser
+    
+    Allows running tasks (e.g. downloading workouts) in the background
+    while doing something else (e.g. GUI).
+    Tasks are launched with do* methods (doLogin, doGetLog, doDownload)
+    and warn when finished with Qt signals (LoginFinished, etc.).
+    """
+    
     LoginAction, GetLogAction, DownloadAction = range(3)
     
     loginFinished = QtCore.Signal(bool)
@@ -70,30 +78,28 @@ class AsioUser(QtCore.QThread, miCoachUser):
 
 class Storage(object):
     def __init__(self, username):
-        if settings.use_user_folder:
-            userFolder = "%s/" % username
-        else:
-            userFolder = ""
-            
-        self.csvPath = "%s/%s/" % (settings.root_folder, userFolder)
-        self.xmlPath = "%s/%s/xml" % (settings.root_folder, userFolder)
-        
+        self.username = username
         self.checkFolder()
     
     def checkFolder(self):
-        if not os.path.exists(self.csvPath):
-            os.makedirs(self.csvPath)
+        csvSplit = settings.csv_path.split('/')
+        csvFolder = os.sep.join(csvSplit[:len(csvSplit)-1]).format(username=self.username)
+        xmlSplit = settings.xml_path.split('/')
+        xmlFolder = os.sep.join(xmlSplit[:len(xmlSplit)-1]).format(username=self.username)
         
-        if settings.save_raw_xml:
-            if not os.path.exists(self.xmlPath):
-                os.makedirs(self.xmlPath)
+        
+        if settings.save_csv and not os.path.exists(csvFolder):
+            os.makedirs(csvFolder)
+        
+        if settings.save_xml and not os.path.exists(xmlFolder):
+                os.makedirs(xmlFolder)
     
     def addWorkout(self, workout, check_exists=False):
-        if settings.save_raw_xml:
-            workout.writeXml("%s/%s - %s.xml" % (self.xmlPath, workout.date, workout.name))
-            
-        workout.writeCsv("%s/%s - %s.csv" % (self.csvPath, workout.date, workout.name))
+        if settings.save_csv:
+            workout.writeCsv(settings.csv_path.format(username=self.username, date=workout.date, name=workout.name))
 
+        if settings.save_xml:
+            workout.writeXml(settings.xml_path.format(username=self.username, date=workout.date, name=workout.name))
 
 class MainWindow(QtGui.QMainWindow):
     ConnectView, ChooseView, DownloadView = range(3)
@@ -157,7 +163,6 @@ class MainWindow(QtGui.QMainWindow):
             i = 0
             for w in workouts:
                 i += 1
-                #~ w.writeXml("data/%s/xml/%s - %s.xml" % (self.user.screenName, w.date, w.name))
                 self.storage.addWorkout(w)
 
                 # counting from download achieved (e.g. 70%)

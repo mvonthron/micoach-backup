@@ -18,7 +18,9 @@ isconnected = False
 
 #
 save_csv = True
-save_raw_xml = True
-root_folder = "data"
-use_user_folder = True
+save_xml = True
+
+csv_path = "data/{username}/{date} - {name}.csv"
+xml_path = "data/{username}/xml/{date} - {name}.xml"
+
 csv_format = "{time}; {heart}; {calories}; {pace};"
