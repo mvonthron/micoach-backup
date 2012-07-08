@@ -82,11 +82,8 @@ class Storage(object):
         self.checkFolder()
     
     def checkFolder(self):
-        csvSplit = settings.csv_path.split('/')
-        csvFolder = os.sep.join(csvSplit[:len(csvSplit)-1]).format(username=self.username)
-        xmlSplit = settings.xml_path.split('/')
-        xmlFolder = os.sep.join(xmlSplit[:len(xmlSplit)-1]).format(username=self.username)
-        
+        csvFolder = os.path.split(settings.csv_path)[0]
+        xmlFolder = os.path.split(settings.xml_path)[0]
         
         if settings.save_csv and not os.path.exists(csvFolder):
             os.makedirs(csvFolder)
