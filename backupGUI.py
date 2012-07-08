@@ -29,13 +29,14 @@ class AsioUser(QtCore.QThread, miCoachUser):
     loginFinished = QtCore.Signal(bool)
     getLogFinished = QtCore.Signal(bool)
     downloadFileFinished = QtCore.Signal(int)
-    downloadAllFinished = QtCore.Signal(object)
+    downloadAllFinished = QtCore.Signal(bool)
 
     def __init__(self, parent=None):
         QtCore.QThread.__init__(self, parent)
         miCoachUser.__init__(self)
         
         self.workoutList = None
+        self.workouts = None
 
     def run(self):
         if self.action == self.LoginAction:
@@ -52,12 +53,12 @@ class AsioUser(QtCore.QThread, miCoachUser):
             self.getLogFinished.emit(True)
             
         elif self.action == self.DownloadAction:
-            workouts = []
+            self.workouts = []
             for id in self.args:
-                workouts.append(self.getSchedule().getWorkout(id))
+                self.workouts.append(self.getSchedule().getWorkout(id))
                 self.downloadFileFinished.emit(id)
     
-            self.downloadAllFinished.emit(workouts)
+            self.downloadAllFinished.emit(True)
 
     # calls
     def doLogin(self, email, passwd):
@@ -152,13 +153,13 @@ class MainWindow(QtGui.QMainWindow):
         self.updateInterface(self.currentView)
     
     def downloadAllFinished(self, workouts):
-        if len(workouts):
-            log.info("All workouts downloaded (%d)" % len(workouts))
+        if len(self.user.workouts):
+            log.info("All workouts downloaded (%d)" % len(self.user.workouts))
 
             self.ui.progressLabel.setText("All files downloaded, saving")
             
             i = 0
-            for w in workouts:
+            for w in self.user.workouts:
                 i += 1
                 self.storage.addWorkout(w)
 
@@ -274,7 +275,7 @@ class MainWindow(QtGui.QMainWindow):
                 for workout in self.user.workoutList:
                     self.table.addLine(workout)
                 
-                        
+                
         # DownloadView
         elif self.currentView == self.DownloadView:
             # buttons
