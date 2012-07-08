@@ -80,24 +80,48 @@ class AsioUser(QtCore.QThread, miCoachUser):
 class Storage(object):
     def __init__(self, username):
         self.username = username
+        
+        self.csvFolder = os.path.split(settings.csv_path)[0].format(username=self.username)
+        self.xmlFolder = os.path.split(settings.xml_path)[0].format(username=self.username)
+        
         self.checkFolder()
     
     def checkFolder(self):
-        csvFolder = os.path.split(settings.csv_path)[0]
-        xmlFolder = os.path.split(settings.xml_path)[0]
+        if settings.save_csv and not os.path.exists(self.csvFolder):
+            os.makedirs(self.csvFolder)
         
-        if settings.save_csv and not os.path.exists(csvFolder):
-            os.makedirs(csvFolder)
-        
-        if settings.save_xml and not os.path.exists(xmlFolder):
-                os.makedirs(xmlFolder)
+        if settings.save_xml and not os.path.exists(self.xmlFolder):
+                os.makedirs(self.xmlFolder)
     
+    def compareWorkoutList(self, woList):
+        """returns ids of workout *not* present in storage folder
+        
+        Resolves with XML files if save_xml enabled, CSV files otherwise.
+        Comparison is made by checking file names with settings.csv|xml_path
+        
+        @todo: replace comparison with workoutList.__sub__() <= implement woList by folder
+        """
+
+        # build arrays of workouts names
+        if settings.save_xml:
+            targetPath = os.path.split(settings.xml_path)[-1]
+            targetFolder = self.xmlFolder
+        else:
+            targetPath = os.path.split(settings.csv_path)[-1]
+            targetFolder = self.csvFolder
+            
+        argList = [(w['id'], targetPath.format(username=self.username, id=w['id'], date=w['date'], name=w['name'])) for w in woList.content]
+        folderList = os.listdir(targetFolder)
+        
+        return [id for id, name in argList if name not in folderList]
+        
+        
     def addWorkout(self, workout, check_exists=False):
         if settings.save_csv:
-            workout.writeCsv(settings.csv_path.format(username=self.username, date=workout.date, name=workout.name))
+            workout.writeCsv(settings.csv_path.format(username=self.username, id=workout.id, date=workout.date, name=workout.name))
 
         if settings.save_xml:
-            workout.writeXml(settings.xml_path.format(username=self.username, date=workout.date, name=workout.name))
+            workout.writeXml(settings.xml_path.format(username=self.username, id=workout.id, date=workout.date, name=workout.name))
 
 class MainWindow(QtGui.QMainWindow):
     ConnectView, ChooseView, DownloadView = range(3)
@@ -144,7 +168,6 @@ class MainWindow(QtGui.QMainWindow):
             self.updateInterface(self.ChooseView)
         else:
             QtGui.QMessageBox.critical(self, "miCoach backup", "Could not retrieve workout list")
-            #~ self.updateInterface(self.ChooseView)
 
     def downloadFileFinished(self, id):
         self.alreadyDownloaded.append(id)
@@ -164,7 +187,7 @@ class MainWindow(QtGui.QMainWindow):
                 self.storage.addWorkout(w)
 
                 # counting from download achieved (e.g. 70%)
-                self.ui.progressBar.setValue(self.ProgressBarDownloadRatio + self.ProgressBarSaveRatio*(i/len(workouts)))
+                self.ui.progressBar.setValue(self.ProgressBarDownloadRatio + self.ProgressBarSaveRatio*(i/len(self.user.workouts)))
 
             log.info("All workouts written")
             self.ui.progressLabel.setText("All files saved")
@@ -267,14 +290,15 @@ class MainWindow(QtGui.QMainWindow):
                 self.ui.chooseInstructionsIcon.setShown(True)
                 self.ui.chooseInstructionsLabel.setText("Loading list of workouts")
             else:
+                existing = self.storage.compareWorkoutList(self.user.workoutList)
+                
                 self.ui.chooseInstructionsIcon.setShown(False)
-                self.ui.chooseInstructionsLabel.setText("Found %d workouts" % len(self.user.workoutList))
+                self.ui.chooseInstructionsLabel.setText("Found %d workouts (%d new)" % (len(self.user.workoutList), len(existing)))
                 self.resize(1000, 450)
                 self.centerInterface()
                 
                 for workout in self.user.workoutList:
-                    self.table.addLine(workout)
-                
+                    self.table.addLine(workout, workout['id'] in existing)
                 
         # DownloadView
         elif self.currentView == self.DownloadView:

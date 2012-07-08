@@ -20,7 +20,8 @@ isconnected = False
 save_csv = True
 save_xml = True
 
+# available : {username}, {id}, {date}, {name}
 csv_path = "data/{username}/{date} - {name}.csv"
 xml_path = "data/{username}/xml/{date} - {name}.xml"
 
-csv_format = "{time}; {heart}; {calories}; {pace};"
+csv_format = "{time}; {hr}; {calories}; {pace};"

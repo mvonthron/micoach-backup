@@ -4,7 +4,7 @@ from libmicoach.simplexml import *
 from libmicoach import settings
 
 format = lambda p: settings.csv_format.format(time=p.TimeFromStart, intervalno=p.IntervalOrderNumber, 
-                                               distance=p.Distance, heart=p.HeartRate,
+                                               distance=p.Distance, hr=p.HeartRate,
                                                calories=p.Calories, pace=p.Pace,
                                                rate=p.StrideRate, steps=p.Steps,
                                                longitude=p.Longitude, latitude=p.Latitude,
@@ -25,7 +25,7 @@ class Workout(object):
                 except:
                     pass
 
-            self.date = self.xml.StartDateTime
+            self.date = datetime.datetime.strptime(str(self.xml.StartDateTime), "%Y-%m-%dT%H:%M:%S")
             self.name = self.xml.WorkoutName
 
         else:

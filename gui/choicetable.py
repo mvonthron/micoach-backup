@@ -50,8 +50,6 @@ class ChoiceTable(QtGui.QTableWidget):
         self.setItem(id, 3, QtGui.QTableWidgetItem(entry['time']))
         self.setItem(id, 4, QtGui.QTableWidgetItem(str(entry['distance'])))
         self.setItem(id, 5, QtGui.QTableWidgetItem(str(entry['id'])))
-        print entry
-
         
     def getCheckedId(self):
         checked = []
