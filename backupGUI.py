@@ -110,7 +110,7 @@ class Storage(object):
             targetPath = os.path.split(settings.csv_path)[-1]
             targetFolder = self.csvFolder
             
-        argList = [(w['id'], targetPath.format(username=self.username, id=w['id'], date=w['date'], name=w['name'])) for w in woList.content]
+        argList = [(w['id'], targetPath.format(username=self.username, id=w['id'], date=w['date'], name=w['name'])) for w in woList]
         folderList = os.listdir(targetFolder)
         
         return [id for id, name in argList if name not in folderList]

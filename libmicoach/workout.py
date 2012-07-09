@@ -50,7 +50,7 @@ class WorkoutList(object):
     def __init__(self, data):
         self.content = []
         
-        # try from xml WorkoutLog
+        # try with SimpleXmlElement from WorkoutLog
         try:
             for w in data.WorkoutLog:
                 start = datetime.datetime.strptime(str(w.StartDate), "%Y-%m-%dT%H:%M:%S")
@@ -72,8 +72,8 @@ class WorkoutList(object):
                                      'hr': int(w.AvgHR.Value),
                                      'pace': float(w.AvgPace.Value)
                                      })
-        except AttributeError as e:
-            print e
+        except:
+            pass
 
         # try from array of dict values [{id, name, date}, {}]
     
