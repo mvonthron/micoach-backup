@@ -7,13 +7,24 @@ logging.basicConfig(level=logging.INFO)
 
 
 import os, sys
-from PySide import QtCore, QtGui, QtUiTools
+try:
+    from PySide import QtCore, QtGui, QtUiTools
+except ImportError:
+    print "Could not load PySide (Qt) librairies, exiting."
+    sys.exit(1)
+
+try:
+    from configobj import ConfigObj
+except:
+    print "Could not load ConfigObj, exiting."
+    sys.exit(1)
 
 from gui.mainwindow import Ui_MainWindow
 from gui.choicetable import ChoiceTable
 from libmicoach.user import miCoachUser
 from libmicoach.errors import *
 from libmicoach import settings
+from config import config
 
 class AsioUser(QtCore.QThread, miCoachUser):
     """Qt-threaded extension of miCoachUser
@@ -81,16 +92,16 @@ class Storage(object):
     def __init__(self, username):
         self.username = username
         
-        self.csvFolder = os.path.split(settings.csv_path)[0].format(username=self.username)
-        self.xmlFolder = os.path.split(settings.xml_path)[0].format(username=self.username)
+        self.csvFolder = os.path.split(config['data']['csv_path'])[0].format(username=self.username)
+        self.xmlFolder = os.path.split(config['data']['xml_path'])[0].format(username=self.username)
         
         self.checkFolder()
     
     def checkFolder(self):
-        if settings.save_csv and not os.path.exists(self.csvFolder):
+        if config.get('data').as_bool('save_csv') and not os.path.exists(self.csvFolder):
             os.makedirs(self.csvFolder)
         
-        if settings.save_xml and not os.path.exists(self.xmlFolder):
+        if config.get('data').as_bool('save_xml') and not os.path.exists(self.xmlFolder):
                 os.makedirs(self.xmlFolder)
     
     def compareWorkoutList(self, woList):
@@ -103,11 +114,11 @@ class Storage(object):
         """
 
         # build arrays of workouts names
-        if settings.save_xml:
-            targetPath = os.path.split(settings.xml_path)[-1]
+        if config.get('data').as_bool('save_xml'):
+            targetPath = os.path.split(config['data']['xml_path'])[-1]
             targetFolder = self.xmlFolder
         else:
-            targetPath = os.path.split(settings.csv_path)[-1]
+            targetPath = os.path.split(config['data']['csv_path'])[-1]
             targetFolder = self.csvFolder
             
         argList = [(w['id'], targetPath.format(username=self.username, id=w['id'], date=w['date'], name=w['name'])) for w in woList]
@@ -117,11 +128,11 @@ class Storage(object):
         
         
     def addWorkout(self, workout, check_exists=False):
-        if settings.save_csv:
-            workout.writeCsv(settings.csv_path.format(username=self.username, id=workout.id, date=workout.date, name=workout.name))
+        if config.get('data').as_bool('save_csv'):
+            workout.writeCsv(config['data']['csv_path'].format(username=self.username, id=workout.id, date=workout.date, name=workout.name))
 
-        if settings.save_xml:
-            workout.writeXml(settings.xml_path.format(username=self.username, id=workout.id, date=workout.date, name=workout.name))
+        if config.get('data').as_bool('save_xml'):
+            workout.writeXml(config['data']['xml_path'].format(username=self.username, id=workout.id, date=workout.date, name=workout.name))
 
 class MainWindow(QtGui.QMainWindow):
     ConnectView, ChooseView, DownloadView = range(3)
