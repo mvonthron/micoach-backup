@@ -18,7 +18,7 @@ class miCoachUser(object):
         settings.email = email
         settings.password = password
         
-        self.profile = UserProfile()
+        self.profile = UserProfile(email, password)
         self.schedule = Schedule()
         
         self.getProfile()

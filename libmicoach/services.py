@@ -11,13 +11,16 @@ class miCoachService(object):
     isconnected = False
     authcookie = ""
     
-    def __init__(self, service):
+    def __init__(self, service, email=None, password=None):
         self.location = ("/v2.0/Services/%s") % service
         self.http = httplib.HTTPConnection("www.micoach.com")
 
         if not miCoachService.isconnected:
+            if not email or not password:
+                raise MissingCredential()
+            
             log.info("Not yet connected, connecting.")
-            self.connect()
+            self.connect(email, password)
     
     def __getattr__(self, attr):
         return lambda self=self, *args, **kwargs: self.call(attr,*args,**kwargs)
@@ -42,10 +45,10 @@ class miCoachService(object):
     def POST(self, action, *args, **kwargs):
         pass
     
-    def connect(self):
+    def connect(self, email, password):
         log.info("Initializing connection")
         
-        params = urllib.urlencode({'password':settings.password, 'email':settings.email})
+        params = urllib.urlencode({'password': password, 'email': email})
         headers ={"Content-type": "application/x-www-form-urlencoded",
                   "Connection": "keep-alive",
                   "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
@@ -54,7 +57,7 @@ class miCoachService(object):
         https.request("POST", "/ca/micoach/login.aspx", params, headers)
         http_authcookie = https.getresponse().getheader('set-cookie')
         
-        params = urllib.urlencode({'password':settings.password, 'email':settings.email})
+        params = urllib.urlencode({'password': password, 'email': email})
         self.http.request("GET", "/v2.0/Services/UserProfileWs.asmx/Login?"+params, headers={'cookie':http_authcookie})
         response = self.http.getresponse()
         xml = SimpleXMLElement(text=response.read())
@@ -68,26 +71,26 @@ class miCoachService(object):
             raise LoginFailed()
 
 class CompletedWorkout(miCoachService):
-    def __init__(self):
-        miCoachService.__init__(self, "CompletedWorkoutWS.asmx")
+    def __init__(self, email=None, password=None):
+        miCoachService.__init__(self, "CompletedWorkoutWS.asmx", email, password)
 
 class UserProfile(miCoachService):
-    def __init__(self):
-        miCoachService.__init__(self, "UserProfileWS.asmx")
+    def __init__(self, email=None, password=None):
+        miCoachService.__init__(self, "UserProfileWS.asmx", email, password)
 
 class SyncAPI(miCoachService):
-    def __init__(self):
-        miCoachService.__init__(self, "SyncAPIWS.asmx")
+    def __init__(self, email=None, password=None):
+        miCoachService.__init__(self, "SyncAPIWS.asmx", email, password)
 
 class Calendar(miCoachService):
-    def __init__(self):
-        miCoachService.__init__(self, "CalendarWS.asmx")
+    def __init__(self, email=None, password=None):
+        miCoachService.__init__(self, "CalendarWS.asmx", email, password)
 
 class Route(miCoachService):
-    def __init__(self):
-        miCoachService.__init__(self, "RouteWS.asmx")
+    def __init__(self, email=None, password=None):
+        miCoachService.__init__(self, "RouteWS.asmx", email, password)
 
 class Activity(miCoachService):
-    def __init__(self):
-        miCoachService.__init__(self, "ActivityWS.asmx")
+    def __init__(self, email=None, password=None):
+        miCoachService.__init__(self, "ActivityWS.asmx", email, password)
 

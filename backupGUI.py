@@ -23,7 +23,6 @@ from gui.mainwindow import Ui_MainWindow
 from gui.choicetable import ChoiceTable
 from libmicoach.user import miCoachUser
 from libmicoach.errors import *
-from libmicoach import settings
 from config import config
 
 class AsioUser(QtCore.QThread, miCoachUser):
