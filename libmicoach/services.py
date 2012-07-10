@@ -3,7 +3,6 @@ import sys
 import logging
 log = logging.getLogger(__name__)
 
-from libmicoach import settings
 from libmicoach.errors import *
 from libmicoach.simplexml import *
 

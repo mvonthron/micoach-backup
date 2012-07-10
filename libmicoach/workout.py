@@ -1,15 +1,6 @@
 from datetime import datetime
 
 from libmicoach.simplexml import *
-from libmicoach import settings
-
-format = lambda p: settings.csv_format.format(time=p.TimeFromStart, intervalno=p.IntervalOrderNumber, 
-                                               distance=p.Distance, hr=p.HeartRate,
-                                               calories=p.Calories, pace=p.Pace,
-                                               rate=p.StrideRate, steps=p.Steps,
-                                               longitude=p.Longitude, latitude=p.Latitude,
-                                               altitude=p.Altitude
-                                               )
 
 class Workout(object):
     def __init__(self, content):
@@ -33,7 +24,16 @@ class Workout(object):
             
 
         
-    def writeCsv(self, filename):
+    def writeCsv(self, filename, formatstring="{time}; {hr}; {calories}; {pace};"):
+        
+        format = lambda p: formatstring.format(time=p.TimeFromStart, intervalno=p.IntervalOrderNumber, 
+                                                   distance=p.Distance, hr=p.HeartRate,
+                                                   calories=p.Calories, pace=p.Pace,
+                                                   rate=p.StrideRate, steps=p.Steps,
+                                                   longitude=p.Longitude, latitude=p.Latitude,
+                                                   altitude=p.Altitude
+                                                   )
+        
         lines = [format(point) for point in self.xml.CompletedWorkoutDataPoint]
         
         file = open(filename, "w")

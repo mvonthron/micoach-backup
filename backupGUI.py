@@ -128,7 +128,8 @@ class Storage(object):
         
     def addWorkout(self, workout, check_exists=False):
         if config.get('data').as_bool('save_csv'):
-            workout.writeCsv(config['data']['csv_path'].format(username=self.username, id=workout.id, date=workout.date, name=workout.name))
+            workout.writeCsv(config['data']['csv_path'].format(username=self.username, id=workout.id, date=workout.date, name=workout.name),
+                             config['data']['csv_format'])
 
         if config.get('data').as_bool('save_xml'):
             workout.writeXml(config['data']['xml_path'].format(username=self.username, id=workout.id, date=workout.date, name=workout.name))
