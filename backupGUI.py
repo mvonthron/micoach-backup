@@ -15,7 +15,7 @@ except ImportError:
 
 try:
     from configobj import ConfigObj
-except:
+except ImportError:
     print "Could not load ConfigObj, exiting."
     sys.exit(1)
 
@@ -97,10 +97,10 @@ class Storage(object):
         self.checkFolder()
     
     def checkFolder(self):
-        if config.get('data').as_bool('save_csv') and not os.path.exists(self.csvFolder):
+        if config['data'].as_bool('save_csv') and not os.path.exists(self.csvFolder):
             os.makedirs(self.csvFolder)
         
-        if config.get('data').as_bool('save_xml') and not os.path.exists(self.xmlFolder):
+        if config['data'].as_bool('save_xml') and not os.path.exists(self.xmlFolder):
                 os.makedirs(self.xmlFolder)
     
     def compareWorkoutList(self, woList):
@@ -113,7 +113,7 @@ class Storage(object):
         """
 
         # build arrays of workouts names
-        if config.get('data').as_bool('save_xml'):
+        if config['data'].as_bool('save_xml'):
             targetPath = os.path.split(config['data']['xml_path'])[-1]
             targetFolder = self.xmlFolder
         else:
@@ -127,11 +127,11 @@ class Storage(object):
         
         
     def addWorkout(self, workout, check_exists=False):
-        if config.get('data').as_bool('save_csv'):
+        if config['data'].as_bool('save_csv'):
             workout.writeCsv(config['data']['csv_path'].format(username=self.username, id=workout.id, date=workout.date, name=workout.name),
                              config['data']['csv_format'])
 
-        if config.get('data').as_bool('save_xml'):
+        if config['data'].as_bool('save_xml'):
             workout.writeXml(config['data']['xml_path'].format(username=self.username, id=workout.id, date=workout.date, name=workout.name))
 
 class MainWindow(QtGui.QMainWindow):
