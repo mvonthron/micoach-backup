@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'mainwindow.ui'
 #
-# Created: Fri Jul  6 15:39:13 2012
+# Created: Sat Jul 14 22:19:28 2012
 #      by: pyside-uic 0.2.13 running on PySide 1.1.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -20,6 +20,8 @@ class Ui_MainWindow(object):
         self.centralWidget.setObjectName("centralWidget")
         self.verticalLayout = QtGui.QVBoxLayout(self.centralWidget)
         self.verticalLayout.setObjectName("verticalLayout")
+        self.horizontalLayout_2 = QtGui.QHBoxLayout()
+        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         self.titleLabel = QtGui.QLabel(self.centralWidget)
         font = QtGui.QFont()
         font.setFamily("DejaVu Sans")
@@ -28,7 +30,18 @@ class Ui_MainWindow(object):
         font.setBold(True)
         self.titleLabel.setFont(font)
         self.titleLabel.setObjectName("titleLabel")
-        self.verticalLayout.addWidget(self.titleLabel)
+        self.horizontalLayout_2.addWidget(self.titleLabel)
+        self.configButton = QtGui.QPushButton(self.centralWidget)
+        self.configButton.setMaximumSize(QtCore.QSize(50, 50))
+        self.configButton.setBaseSize(QtCore.QSize(25, 25))
+        self.configButton.setText("")
+        icon1 = QtGui.QIcon()
+        icon1.addPixmap(QtGui.QPixmap(":/images/configuration.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.configButton.setIcon(icon1)
+        self.configButton.setFlat(True)
+        self.configButton.setObjectName("configButton")
+        self.horizontalLayout_2.addWidget(self.configButton)
+        self.verticalLayout.addLayout(self.horizontalLayout_2)
         self.viewPages = QtGui.QStackedWidget(self.centralWidget)
         self.viewPages.setObjectName("viewPages")
         self.connectPage = QtGui.QWidget()
@@ -95,7 +108,7 @@ class Ui_MainWindow(object):
         self.progressBar.setProperty("value", 24)
         self.progressBar.setObjectName("progressBar")
         self.gridLayout_3.addWidget(self.progressBar, 2, 0, 1, 1)
-        spacerItem1 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        spacerItem1 = QtGui.QSpacerItem(20, 20, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.gridLayout_3.addItem(spacerItem1, 1, 0, 1, 1)
         self.progressLabel = QtGui.QLabel(self.downloadPage)
         self.progressLabel.setObjectName("progressLabel")
@@ -120,7 +133,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralWidget)
 
         self.retranslateUi(MainWindow)
-        self.viewPages.setCurrentIndex(2)
+        self.viewPages.setCurrentIndex(0)
         QtCore.QObject.connect(self.passwordLine, QtCore.SIGNAL("returnPressed()"), self.nextButton.click)
         QtCore.QObject.connect(self.emailLine, QtCore.SIGNAL("returnPressed()"), self.nextButton.click)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)

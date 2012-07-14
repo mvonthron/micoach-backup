@@ -23,7 +23,7 @@ from gui.mainwindow import Ui_MainWindow
 from gui.choicetable import ChoiceTable
 from libmicoach.user import miCoachUser
 from libmicoach.errors import *
-from config import config
+from config import config, ConfigUI
 
 class AsioUser(QtCore.QThread, miCoachUser):
     """Qt-threaded extension of miCoachUser
@@ -148,6 +148,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.chooseVLayout.addWidget(self.table)
         
         # connections
+        self.ui.configButton.clicked.connect(self.showConfig)
         self.ui.nextButton.clicked.connect(self.processAndGoNext)
         self.ui.previousButton.clicked.connect(self.abortAndGoPrevious)
         
@@ -328,6 +329,9 @@ class MainWindow(QtGui.QMainWindow):
             self.resize(480, 205)
             self.centerInterface()
 
+    def showConfig(self):
+        conf = ConfigUI()
+        conf.show()
 
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)  
