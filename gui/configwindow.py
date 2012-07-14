@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'configwindow.ui'
 #
-# Created: Sat Jul 14 22:19:36 2012
+# Created: Sun Jul 15 00:27:50 2012
 #      by: pyside-uic 0.2.13 running on PySide 1.1.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -13,6 +13,9 @@ class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
         Dialog.resize(481, 261)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(":/images/icon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        Dialog.setWindowIcon(icon)
         self.verticalLayout = QtGui.QVBoxLayout(Dialog)
         self.verticalLayout.setObjectName("verticalLayout")
         self.mainLabel = QtGui.QLabel(Dialog)
@@ -110,7 +113,7 @@ class Ui_Dialog(object):
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
     def retranslateUi(self, Dialog):
-        Dialog.setWindowTitle(QtGui.QApplication.translate("Dialog", "Dialog", None, QtGui.QApplication.UnicodeUTF8))
+        Dialog.setWindowTitle(QtGui.QApplication.translate("Dialog", "miCoach backup - configuration", None, QtGui.QApplication.UnicodeUTF8))
         self.mainLabel.setText(QtGui.QApplication.translate("Dialog", "miCoach backup - Configuration", None, QtGui.QApplication.UnicodeUTF8))
         self.emailLabel.setText(QtGui.QApplication.translate("Dialog", "Email", None, QtGui.QApplication.UnicodeUTF8))
         self.passwdLabel.setText(QtGui.QApplication.translate("Dialog", "Password", None, QtGui.QApplication.UnicodeUTF8))
@@ -124,3 +127,4 @@ class Ui_Dialog(object):
         self.xmlPathLabel.setText(QtGui.QApplication.translate("Dialog", "XML path", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.dataTab), QtGui.QApplication.translate("Dialog", "Data", None, QtGui.QApplication.UnicodeUTF8))
 
+import images_rc
