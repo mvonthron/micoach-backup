@@ -287,6 +287,8 @@ class MainWindow(QtGui.QMainWindow):
             # buttons
             self.ui.cancelButton.setVisible(False)
             self.ui.previousButton.setVisible(False)
+            self.ui.emailLine.setFocus()
+            
             self.ui.nextButton.setText("Next")
             self.resize(480, 205)
             self.centerInterface()
