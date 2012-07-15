@@ -332,8 +332,8 @@ class MainWindow(QtGui.QMainWindow):
             self.centerInterface()
 
     def showConfig(self):
-        conf = ConfigUI()
-        conf.show()
+        conf = ConfigUI(config)
+        conf.exec_()
 
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)  
