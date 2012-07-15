@@ -6,19 +6,6 @@ except ImportError:
     print "Could not load PySide (Qt) librairies, exiting."
     sys.exit(1)
     
-#~ class Config(configobj.ConfigObj):
-    #~ """ 
-    #~ 
-    #~ config.get('section') => config.section
-    #~ """
-    #~ email = ""
-    #~ password = ""
-    #~ 
-    #~ def __getattr__(self, key):
-        #~ return self.get(key)
-#~ 
-#~ class Section(configobj.Section):
-    #~ pass
 
 from gui.configwindow import Ui_Dialog
     

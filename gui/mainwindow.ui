@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>476</width>
-    <height>243</height>
+    <height>258</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -50,6 +50,9 @@
           <height>25</height>
          </size>
         </property>
+        <property name="toolTip">
+         <string>Edit configuration</string>
+        </property>
         <property name="text">
          <string/>
         </property>
@@ -86,7 +89,11 @@
          </widget>
         </item>
         <item row="1" column="1">
-         <widget class="QLineEdit" name="emailLine"/>
+         <widget class="QLineEdit" name="emailLine">
+          <property name="toolTip">
+           <string>Enter email address used for login on micoach.com</string>
+          </property>
+         </widget>
         </item>
         <item row="2" column="0">
          <widget class="QLabel" name="passwordLabel">
@@ -97,6 +104,9 @@
         </item>
         <item row="2" column="1">
          <widget class="QLineEdit" name="passwordLine">
+          <property name="toolTip">
+           <string>Enter your password on micoach.com</string>
+          </property>
           <property name="echoMode">
            <enum>QLineEdit::Password</enum>
           </property>
@@ -115,19 +125,6 @@
           </property>
          </spacer>
         </item>
-        <item row="3" column="1">
-         <widget class="QLabel" name="forgotPasswordLabel">
-          <property name="text">
-           <string>Forgot Password?</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-          <property name="openExternalLinks">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
         <item row="4" column="0">
          <widget class="QLabel" name="loadingIcon">
           <property name="text">
@@ -145,6 +142,16 @@
          <widget class="QLabel" name="loadingLabel">
           <property name="text">
            <string>Loading...</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QCheckBox" name="connectBox">
+          <property name="toolTip">
+           <string>Save my infos and sign in at startup</string>
+          </property>
+          <property name="text">
+           <string>connect at startup</string>
           </property>
          </widget>
         </item>
@@ -222,6 +229,9 @@
         <property name="enabled">
          <bool>true</bool>
         </property>
+        <property name="toolTip">
+         <string>Abort and exit</string>
+        </property>
         <property name="text">
          <string>Cancel</string>
         </property>
@@ -242,6 +252,9 @@
       </item>
       <item>
        <widget class="QPushButton" name="previousButton">
+        <property name="toolTip">
+         <string>Abort and go previous</string>
+        </property>
         <property name="text">
          <string>Previous</string>
         </property>
@@ -249,6 +262,9 @@
       </item>
       <item>
        <widget class="QPushButton" name="nextButton">
+        <property name="toolTip">
+         <string>Process and go next</string>
+        </property>
         <property name="text">
          <string>Next</string>
         </property>

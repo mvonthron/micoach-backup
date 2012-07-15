@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'mainwindow.ui'
+# Form implementation generated from reading ui file 'gui/mainwindow.ui'
 #
-# Created: Sun Jul 15 00:27:57 2012
+# Created: Sun Jul 15 23:55:58 2012
 #      by: pyside-uic 0.2.13 running on PySide 1.1.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -12,7 +12,7 @@ from PySide import QtCore, QtGui
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(476, 243)
+        MainWindow.resize(476, 258)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/images/icon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainWindow.setWindowIcon(icon)
@@ -66,11 +66,6 @@ class Ui_MainWindow(object):
         self.gridLayout_2.addWidget(self.passwordLine, 2, 1, 1, 1)
         spacerItem = QtGui.QSpacerItem(376, 3, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.gridLayout_2.addItem(spacerItem, 5, 1, 1, 1)
-        self.forgotPasswordLabel = QtGui.QLabel(self.connectPage)
-        self.forgotPasswordLabel.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
-        self.forgotPasswordLabel.setOpenExternalLinks(True)
-        self.forgotPasswordLabel.setObjectName("forgotPasswordLabel")
-        self.gridLayout_2.addWidget(self.forgotPasswordLabel, 3, 1, 1, 1)
         self.loadingIcon = QtGui.QLabel(self.connectPage)
         self.loadingIcon.setText("")
         self.loadingIcon.setPixmap(QtGui.QPixmap(":/reload.png"))
@@ -80,6 +75,9 @@ class Ui_MainWindow(object):
         self.loadingLabel = QtGui.QLabel(self.connectPage)
         self.loadingLabel.setObjectName("loadingLabel")
         self.gridLayout_2.addWidget(self.loadingLabel, 4, 1, 1, 1)
+        self.connectBox = QtGui.QCheckBox(self.connectPage)
+        self.connectBox.setObjectName("connectBox")
+        self.gridLayout_2.addWidget(self.connectBox, 3, 1, 1, 1)
         self.viewPages.addWidget(self.connectPage)
         self.choosePage = QtGui.QWidget()
         self.choosePage.setObjectName("choosePage")
@@ -145,16 +143,23 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "miCoach backup", None, QtGui.QApplication.UnicodeUTF8))
         self.titleLabel.setText(QtGui.QApplication.translate("MainWindow", "miCoach backup", None, QtGui.QApplication.UnicodeUTF8))
+        self.configButton.setToolTip(QtGui.QApplication.translate("MainWindow", "Edit configuration", None, QtGui.QApplication.UnicodeUTF8))
         self.connectInstructionsLabel.setText(QtGui.QApplication.translate("MainWindow", "Please enter your login informations", None, QtGui.QApplication.UnicodeUTF8))
         self.emailLabel.setText(QtGui.QApplication.translate("MainWindow", "Email", None, QtGui.QApplication.UnicodeUTF8))
+        self.emailLine.setToolTip(QtGui.QApplication.translate("MainWindow", "Enter email address used for login on micoach.com", None, QtGui.QApplication.UnicodeUTF8))
         self.passwordLabel.setText(QtGui.QApplication.translate("MainWindow", "Password", None, QtGui.QApplication.UnicodeUTF8))
-        self.forgotPasswordLabel.setText(QtGui.QApplication.translate("MainWindow", "Forgot Password?", None, QtGui.QApplication.UnicodeUTF8))
+        self.passwordLine.setToolTip(QtGui.QApplication.translate("MainWindow", "Enter your password on micoach.com", None, QtGui.QApplication.UnicodeUTF8))
         self.loadingLabel.setText(QtGui.QApplication.translate("MainWindow", "Loading...", None, QtGui.QApplication.UnicodeUTF8))
+        self.connectBox.setToolTip(QtGui.QApplication.translate("MainWindow", "Save my infos and sign in at startup", None, QtGui.QApplication.UnicodeUTF8))
+        self.connectBox.setText(QtGui.QApplication.translate("MainWindow", "connect at startup", None, QtGui.QApplication.UnicodeUTF8))
         self.chooseInstructionsLabel.setText(QtGui.QApplication.translate("MainWindow", "Select workouts to be downloaded. ", None, QtGui.QApplication.UnicodeUTF8))
         self.downloadInfosLabel.setText(QtGui.QApplication.translate("MainWindow", "Downloading selected files", None, QtGui.QApplication.UnicodeUTF8))
         self.progressLabel.setText(QtGui.QApplication.translate("MainWindow", "Downloading file 0 of 0", None, QtGui.QApplication.UnicodeUTF8))
+        self.cancelButton.setToolTip(QtGui.QApplication.translate("MainWindow", "Abort and exit", None, QtGui.QApplication.UnicodeUTF8))
         self.cancelButton.setText(QtGui.QApplication.translate("MainWindow", "Cancel", None, QtGui.QApplication.UnicodeUTF8))
+        self.previousButton.setToolTip(QtGui.QApplication.translate("MainWindow", "Abort and go previous", None, QtGui.QApplication.UnicodeUTF8))
         self.previousButton.setText(QtGui.QApplication.translate("MainWindow", "Previous", None, QtGui.QApplication.UnicodeUTF8))
+        self.nextButton.setToolTip(QtGui.QApplication.translate("MainWindow", "Process and go next", None, QtGui.QApplication.UnicodeUTF8))
         self.nextButton.setText(QtGui.QApplication.translate("MainWindow", "Next", None, QtGui.QApplication.UnicodeUTF8))
 
 import images_rc
