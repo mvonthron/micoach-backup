@@ -164,7 +164,8 @@ class MainWindow(QtGui.QMainWindow):
         self.alreadyDownloaded = []
         
         self.updateInterface(self.ConnectView)
-
+        if config['user'].as_bool('auto_connect'):
+            self.processAndGoNext()
     
     def loginFinished(self, success):
         if success:
@@ -284,6 +285,14 @@ class MainWindow(QtGui.QMainWindow):
         
         # ConnectView
         if self.currentView == self.ConnectView:
+            # populate
+            try:
+                self.ui.emailLine.setText(config['user']['email'])
+                self.ui.passwordLine.setText(config['user']['password'])
+                self.ui.connectBox.setChecked(config['user'].as_bool('auto_connect'))
+            except:
+                pass
+            
             # buttons
             self.ui.cancelButton.setVisible(False)
             self.ui.previousButton.setVisible(False)
