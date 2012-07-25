@@ -5,10 +5,45 @@ try:
 except ImportError:
     print "Could not load PySide (Qt) librairies, exiting."
     sys.exit(1)
-    
 
 from gui.configwindow import Ui_Dialog
     
+DEFAULT_CONFIG_FILENAME = "micoach-backup.conf"
+
+DEFAULT_CONFIG_CONTENT = """# miCoach backup
+# configuration file
+
+[user]
+# if empty, will be asked at launch
+email = ""
+password = ""
+# connect at launch (works only if email/passwd already set)
+auto_connect = False
+
+[data]
+# CSV
+save_csv = True
+# csv lines format 
+# available: {time} {hr} {calories} {pace}
+csv_format = {time}; {hr}; {calories}; {pace};
+# storage path
+# available: {username} {date} {name}
+csv_path = data/{username}/{date} - {name}.csv
+
+# XML
+save_xml = True
+# storage path
+# available: {username} {date} {name}
+xml_path = data/{username}/xml/{date} - {name}.xml
+
+[network]
+# 
+#use_https = false
+
+# 
+#timeout = 0
+"""
+
 class ConfigUI(QtGui.QDialog):
     def __init__(self, config=None):
         QtGui.QDialog.__init__(self)
@@ -53,6 +88,12 @@ class ConfigUI(QtGui.QDialog):
         self.config.write()
         
         self.config.reload()
-        
-        
-config = configobj.ConfigObj('micoach-backup.conf')
+
+
+try:
+    config = configobj.ConfigObj(DEFAULT_CONFIG_FILENAME, file_error=True)
+except IOError: 
+    # config file doesn't exist, creating one
+    with open(DEFAULT_CONFIG_FILENAME, 'w') as f:
+        f.write(DEFAULT_CONFIG_CONTENT)
+    config = configobj.ConfigObj(DEFAULT_CONFIG_FILENAME, file_error=True)
