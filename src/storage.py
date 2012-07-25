@@ -1,3 +1,6 @@
+import logging
+log = logging.getLogger(__name__)
+
 import os
 from config import config
 
@@ -42,8 +45,8 @@ class Storage(object):
         
     def addWorkout(self, workout, check_exists=False):
         if config['data'].as_bool('save_csv'):
-            workout.writeCsv(config['data']['csv_path'].format(username=self.username, id=workout.id, date=workout.date, name=workout.name),
+            workout.writeCsv(config['data']['csv_path'].format(username=self.username, id=workout.id, date=workout.date.strftime("%Y-%m-%d %H-%M-%S"), name=workout.name),
                              config['data']['csv_format'])
 
         if config['data'].as_bool('save_xml'):
-            workout.writeXml(config['data']['xml_path'].format(username=self.username, id=workout.id, date=workout.date, name=workout.name))
+            workout.writeXml(config['data']['xml_path'].format(username=self.username, id=workout.id, date=workout.date.strftime("%Y-%m-%d %H-%M-%S"), name=workout.name))

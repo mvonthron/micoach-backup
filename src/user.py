@@ -1,3 +1,6 @@
+import logging
+log = logging.getLogger(__name__)
+
 
 try:
     from PySide import QtCore, QtGui, QtUiTools

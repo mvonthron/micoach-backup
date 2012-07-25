@@ -18,6 +18,7 @@ Usage
 
   - [Python](http://www.python.org) 2.6+
   - [PySide](http://www.pyside.org)
+  - [ConfigObj](http://www.voidspace.org.uk/python/configobj.html)
   - a computer and a *miCoach* account...
 
 **Installation**
