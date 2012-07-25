@@ -115,7 +115,7 @@ class MainWindow(QtGui.QMainWindow):
             if self.ui.connectBox.isChecked():
                config['user']['email'] = email
                config['user']['password'] = passwd
-            else 
+            else:
                 config['user']['email'] = ""
                 config['user']['password'] = ""
             config['user']['auto_connect'] = self.ui.connectBox.isChecked()
