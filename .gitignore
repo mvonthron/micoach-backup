@@ -1,1 +1,4 @@
 *.pyc
+data/
+build/
+dist/
