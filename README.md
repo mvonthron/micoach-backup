@@ -40,7 +40,7 @@ Screenshots
 What else
 ----
 
-**miCoach backup** is being actively developped is *almost ready* for use.
+**miCoach backup** is being actively developped is ready for use.
 
 The API let's you do pretty much everything the [website](http://www.micoach.com/) can do and even a lot more. So far you will only be able to save your workouts on you computer.
 
@@ -49,6 +49,8 @@ Licensing
 
 This program and its documentation are released under the terms of the
 BSD license.
+
+XML manipulation library (simplexml.py) by Mariano Reingar, LGPL license
 
 ----
 2012, Manuel Vonthron <manuel.vonthron@acadis.org>
