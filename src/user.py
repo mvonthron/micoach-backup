@@ -12,7 +12,6 @@ from libmicoach.user import miCoachUser
 from libmicoach.errors import *
 
 
-
 class AsioUser(QtCore.QThread, miCoachUser):
     """Qt-threaded extension of miCoachUser
     

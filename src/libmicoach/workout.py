@@ -25,7 +25,6 @@ class Workout(object):
 
         
     def writeCsv(self, filename, formatstring="{time}; {hr}; {calories}; {pace};"):
-        
         format = lambda p: formatstring.format(time=p.TimeFromStart, intervalno=p.IntervalOrderNumber, 
                                                    distance=p.Distance, hr=p.HeartRate,
                                                    calories=p.Calories, pace=p.Pace,

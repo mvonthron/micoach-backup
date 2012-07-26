@@ -12,16 +12,19 @@ setup(
     # py2exe
     windows = [{
         "script": "micoach-backup",
-        "icon_resources": [(0, "gui/images/icon.ico")],
+        "icon_resources": [(0, "icon.ico")],
         "copyright": "Copyright (c) 2012, Manuel Vonthron",
         "version": "0.9",
     }],
     zipfile = None,
+    datafiles = ["icon.ico",],
     options = {
         "py2exe": {
             "includes": ["PySide.QtXml", "configobj"],
             "dll_excludes": ["MSVCP90.dll", "w9xpopen.exe"],
-            "bundle_files": 1
+            "bundle_files": 1,
+            'compressed': 1,
+            'optimize': 2,
         }
     },
 )
