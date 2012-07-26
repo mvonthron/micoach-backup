@@ -15,11 +15,12 @@ Description
 Usage 
 -----
 **Requirements**
+  - a computer and a *miCoach* account...
 
+No requirements with the win32 binary, from the Python source code:
   - [Python](http://www.python.org) 2.6+
   - [PySide](http://www.pyside.org)
   - [ConfigObj](http://www.voidspace.org.uk/python/configobj.html)
-  - a computer and a *miCoach* account...
 
 **Installation**
 
@@ -33,10 +34,10 @@ No installation needed. Just move the program wherever you like.
 4. Wait a few seconds, you're all done!
 
 
-Screenshots
+Screenshot
 ----
 
-*Coming soon*
+![miCoach backup](http://acadis.org/images/micoach/screenshot-chooseView.png)
 
 What else
 ----
