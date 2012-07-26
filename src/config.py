@@ -44,7 +44,10 @@ xml_path = data/{username}/xml/{date} - {name}.xml
 #timeout = 0
 """
 
+format_comment = lambda a: '\n'.join(a).replace("# ", "").strip()
+
 class ConfigUI(QtGui.QDialog):
+    
     def __init__(self, config=None):
         QtGui.QDialog.__init__(self)
         self.ui = Ui_Dialog()
@@ -60,16 +63,29 @@ class ConfigUI(QtGui.QDialog):
     def populateUI(self):
         # account tab
         self.ui.emailLine.setText(self.config['user']['email'])
+        self.ui.emailLine.setToolTip(format_comment(config['user'].comments['email']))
+        
         self.ui.passwdLine.setText(self.config['user']['password'])
+        self.ui.passwdLine.setToolTip(format_comment(config['user'].comments['password']))
+        
         self.ui.connectBox.setChecked(self.config['user'].as_bool('auto_connect'))
+        self.ui.connectBox.setToolTip(format_comment(config['user'].comments['auto_connect']))
         
         # data tab
         self.ui.saveCsvBox.setChecked(self.config['data'].as_bool('save_csv'))
+        self.ui.saveCsvBox.setToolTip(format_comment(config['data'].comments['save_csv']))
+        
         self.ui.csvPathLine.setText(self.config['data']['csv_path'])
+        self.ui.csvPathLine.setToolTip(format_comment(config['data'].comments['csv_path']))
+        
         self.ui.csvFormatLine.setText(self.config['data']['csv_format'])
+        self.ui.csvFormatLine.setToolTip(format_comment(config['data'].comments['csv_format']))
         
         self.ui.saveXmlBox.setChecked(self.config['data'].as_bool('save_xml'))
+        self.ui.saveXmlBox.setToolTip(format_comment(config['data'].comments['save_xml']))
+        
         self.ui.xmlPathLine.setText(self.config['data']['xml_path'])
+        self.ui.xmlPathLine.setToolTip(format_comment(config['data'].comments['xml_path']))
         
     def saveFromUI(self):
         # account tab
