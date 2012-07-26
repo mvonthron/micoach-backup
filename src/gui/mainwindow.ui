@@ -125,19 +125,6 @@
           </property>
          </spacer>
         </item>
-        <item row="4" column="0">
-         <widget class="QLabel" name="loadingIcon">
-          <property name="text">
-           <string/>
-          </property>
-          <property name="pixmap">
-           <pixmap resource="images.qrc">:/reload.png</pixmap>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-        </item>
         <item row="4" column="1">
          <widget class="QLabel" name="loadingLabel">
           <property name="text">
@@ -155,26 +142,33 @@
           </property>
          </widget>
         </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="loadingIcon">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
       <widget class="QWidget" name="choosePage">
        <layout class="QVBoxLayout" name="chooseVLayout">
         <item>
          <layout class="QFormLayout" name="formLayout">
-          <item row="0" column="0">
-           <widget class="QLabel" name="chooseInstructionsIcon">
-            <property name="text">
-             <string/>
-            </property>
-            <property name="pixmap">
-             <pixmap resource="images.qrc">:/reload.png</pixmap>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="1">
            <widget class="QLabel" name="chooseInstructionsLabel">
             <property name="text">
              <string>Select workouts to be downloaded. </string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="chooseInstructionsIcon">
+            <property name="text">
+             <string/>
             </property>
            </widget>
           </item>
@@ -298,8 +292,8 @@
      <y>115</y>
     </hint>
     <hint type="destinationlabel">
-     <x>432</x>
-     <y>211</y>
+     <x>465</x>
+     <y>247</y>
     </hint>
    </hints>
   </connection>

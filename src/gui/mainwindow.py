@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui/mainwindow.ui'
 #
-# Created: Sun Jul 15 23:55:58 2012
+# Created: Thu Jul 26 16:05:56 2012
 #      by: pyside-uic 0.2.13 running on PySide 1.1.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -66,18 +66,17 @@ class Ui_MainWindow(object):
         self.gridLayout_2.addWidget(self.passwordLine, 2, 1, 1, 1)
         spacerItem = QtGui.QSpacerItem(376, 3, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.gridLayout_2.addItem(spacerItem, 5, 1, 1, 1)
-        self.loadingIcon = QtGui.QLabel(self.connectPage)
-        self.loadingIcon.setText("")
-        self.loadingIcon.setPixmap(QtGui.QPixmap(":/reload.png"))
-        self.loadingIcon.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
-        self.loadingIcon.setObjectName("loadingIcon")
-        self.gridLayout_2.addWidget(self.loadingIcon, 4, 0, 1, 1)
         self.loadingLabel = QtGui.QLabel(self.connectPage)
         self.loadingLabel.setObjectName("loadingLabel")
         self.gridLayout_2.addWidget(self.loadingLabel, 4, 1, 1, 1)
         self.connectBox = QtGui.QCheckBox(self.connectPage)
         self.connectBox.setObjectName("connectBox")
         self.gridLayout_2.addWidget(self.connectBox, 3, 1, 1, 1)
+        self.loadingIcon = QtGui.QLabel(self.connectPage)
+        self.loadingIcon.setText("")
+        self.loadingIcon.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.loadingIcon.setObjectName("loadingIcon")
+        self.gridLayout_2.addWidget(self.loadingIcon, 4, 0, 1, 1)
         self.viewPages.addWidget(self.connectPage)
         self.choosePage = QtGui.QWidget()
         self.choosePage.setObjectName("choosePage")
@@ -85,14 +84,13 @@ class Ui_MainWindow(object):
         self.chooseVLayout.setObjectName("chooseVLayout")
         self.formLayout = QtGui.QFormLayout()
         self.formLayout.setObjectName("formLayout")
-        self.chooseInstructionsIcon = QtGui.QLabel(self.choosePage)
-        self.chooseInstructionsIcon.setText("")
-        self.chooseInstructionsIcon.setPixmap(QtGui.QPixmap(":/reload.png"))
-        self.chooseInstructionsIcon.setObjectName("chooseInstructionsIcon")
-        self.formLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.chooseInstructionsIcon)
         self.chooseInstructionsLabel = QtGui.QLabel(self.choosePage)
         self.chooseInstructionsLabel.setObjectName("chooseInstructionsLabel")
         self.formLayout.setWidget(0, QtGui.QFormLayout.FieldRole, self.chooseInstructionsLabel)
+        self.chooseInstructionsIcon = QtGui.QLabel(self.choosePage)
+        self.chooseInstructionsIcon.setText("")
+        self.chooseInstructionsIcon.setObjectName("chooseInstructionsIcon")
+        self.formLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.chooseInstructionsIcon)
         self.chooseVLayout.addLayout(self.formLayout)
         self.viewPages.addWidget(self.choosePage)
         self.downloadPage = QtGui.QWidget()
