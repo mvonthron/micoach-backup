@@ -3,8 +3,8 @@ import py2exe
 
 setup(
     name = "miCoach backup",
-    version = "0.9",
-    description = "miCoach backup is a tool to save your workouts from Adidas miCoach to your computer",
+    version = "1.0",
+    description = "Tool to save your workouts from Adidas miCoach to your computer",
     author = "Manuel Vonthron",
     author_email = "manuel.vonthron@acadis.org",
     url = "https://github.com/gliss/micoach-backup",
@@ -14,10 +14,9 @@ setup(
         "script": "micoach-backup",
         "icon_resources": [(0, "icon.ico")],
         "copyright": "Copyright (c) 2012, Manuel Vonthron",
-        "version": "0.9",
+        "version": "1.0",
     }],
     zipfile = None,
-    datafiles = ["icon.ico",],
     options = {
         "py2exe": {
             "includes": ["PySide.QtXml", "configobj"],
