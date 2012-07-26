@@ -1,3 +1,6 @@
+import logging
+log = logging.getLogger(__name__)
+
 
 try:
     from PySide import QtCore, QtGui, QtUiTools
@@ -7,7 +10,6 @@ except ImportError:
 
 from libmicoach.user import miCoachUser
 from libmicoach.errors import *
-
 
 
 class AsioUser(QtCore.QThread, miCoachUser):
