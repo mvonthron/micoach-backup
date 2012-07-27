@@ -39,7 +39,7 @@ class MainWindow(QtGui.QMainWindow):
         
         self.table = ChoiceTable(self.ui.choosePage)
         self.ui.chooseVLayout.addWidget(self.table)
-        self.ui.loadingMovie = QtGui.QMovie(":/images/loading.gif")
+        self.ui.loadingMovie = QtGui.QMovie(":/images/loading.apng")
         self.ui.loadingIcon.setMovie(self.ui.loadingMovie)
         self.ui.chooseInstructionsIcon.setMovie(self.ui.loadingMovie)
         self.ui.loadingMovie.start()

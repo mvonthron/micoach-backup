@@ -2,6 +2,6 @@
     <qresource prefix="/">
         <file>images/icon.png</file>
         <file>images/configuration.png</file>
-        <file>images/loading.gif</file>
+        <file>images/loading.apng</file>
     </qresource>
 </RCC>
