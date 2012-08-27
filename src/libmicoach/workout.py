@@ -35,14 +35,119 @@ class Workout(object):
         
         lines = [format(point) for point in self.xml.CompletedWorkoutDataPoint]
         
-        file = open(filename, "w")
-        file.write("\n".join(lines))
-        file.close()
+        with open(filename, "w") as f:
+            f.write("\n".join(lines))
     
     def writeXml(self, filename):
-        file = open(filename, "w")
-        file.write(self.xml.as_xml())
-        file.close()
+        with open(filename, "w") as f:
+            f.write(self.xml.as_xml())
+            
+    def writeTxc(self, filename):
+        # Write Garmin's TCX file
+        
+        out = SimpleXMLElement("<TrainingCenterDatabase />")
+        out.add_attribute("xmlns", "http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2")
+        out.add_attribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
+        out.add_attribute("xsi:schemaLocation", "http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd")
+
+        out.add_child("Courses")
+        course = out.Courses.add_child("Course")
+
+        #
+        # HEADERS
+        #
+        course.add_child("Name", self.xml.WorkoutName)
+
+        lap = course.add_child("Lap")
+        # Total
+        lap.add_child("TotalTimeSeconds", self.xml.TotalTime)
+        lap.add_child("DistanceMeters", self.xml.TotalDistance.Value)
+
+        # Activity type
+        try:
+            activity = self.xml.ExerciseType
+            if activity.startswith("CoolDown"):
+                lap.add_child("Intensity", "Resting")
+            else:
+                lap.add_child("Intensity", "Active")
+        except AttributeError:
+            lap.add_child("Intensity", "Active")
+
+        # HR
+        avgHr = lap.add_child("AverageHeartRateBpm")
+        avgHr.add_attribute("xsi:type", "HeartRateInBeatsPerMinute_t")
+        avgHr.add_child("Value", self.xml.AvgHR.Value)
+        maxHr = lap.add_child("MaximumHeartRateBpm")
+        maxHr.add_attribute("xsi:type", "HeartRateInBeatsPerMinute_t")
+        maxHr.add_child("Value", self.xml.PeakHR.Value)
+
+        # GPS
+        try:
+            beg = self.xml.WorkoutRoute.UserRouteCoordinate[0]
+            end = self.xml.WorkoutRoute.UserRouteCoordinate[-1]
+            begLat, begLong = beg.Latitude, beg.Longitude
+            endLat, endLong = end.Latitude, end.Longitude
+        except AttributeError:
+            begLat, begLong = 0, 0
+            endLat, endLong = 0, 0
+
+        begin = lap.add_child("BeginPosition")
+        begin.add_child("LatitudeDegrees", begLat)
+        begin.add_child("LongitudeDegrees", begLong)
+
+        end = lap.add_child("EndPosition")
+        end.add_child("LatitudeDegrees", endLat)
+        end.add_child("LongitudeDegrees", endLong)
+
+        #
+        # POINTS
+        #
+        track = course.add_child("Track")
+        #non ISO for now
+        #start = datetime.strptime(str(self.xml.StartDateTime), "%Y-%m-%dT%H:%M:%S")
+        start = datetime.strptime(str(self.xml.StartDateTime), "%Y-%m-%dT%H:%M:%S")
+
+        for point in self.xml.CompletedWorkoutDataPoints.CompletedWorkoutDataPoint:
+            trackpoint = track.add_child("Trackpoint")
+
+            delta = timedelta(0, float(point.TimeFromStart))
+            
+            trackpoint.add_child("Time", (start+delta).isoformat())
+            
+            trackpoint.add_child("DistanceMeters", point.Distance)
+            hr = trackpoint.add_child("HeartRateBpm")
+            hr.add_attribute("xsi:type", "HeartRateInBeatsPerMinute_t")
+            hr.add_child("Value", point.HeartRate)
+            # sensorstate ???
+            
+            # GPS
+            try:
+                lat = point.Latitude
+                long = point.Longitude
+            except AttributeError:
+                lat, long = 0, 0
+                
+            try:
+                alt = point.Altitude
+            except AttributeError:
+                lat = 0
+
+            trackpoint.add_child("Position")
+            trackpoint.Position.add_child("LatitudeDegrees", lat)
+            trackpoint.Position.add_child("LongitudeDegrees", long)
+            trackpoint.add_child("AltitudeMeters", alt)
+            
+            # Missing : pace, striderate, timefromstart
+            # Extensions
+            calories = trackpoint.add_child("Extensions").add_child("FatCalories")
+            calories.add_attribute("xmlns", "http://www.garmin.com/xmlschemas/FatCalories/v1")
+            calories.add_child("Value", point.Calories)
+            
+            cadence = trackpoint.Extensions.add_child("ActivityTrackpointExtension")
+            cadence.add_attribute("xmlns", "http://www.garmin.com/xmlschemas/ActivityExtension/v1")
+            cadence.add_attribute("SourceSensor", "Footpod")
+            cadence.add_child("RunCadence", point.StrideRate)
+
     
 class WorkoutList(object):
     
