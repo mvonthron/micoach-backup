@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from libmicoach.simplexml import *
 
@@ -42,7 +42,7 @@ class Workout(object):
         with open(filename, "w") as f:
             f.write(self.xml.as_xml())
             
-    def writeTxc(self, filename):
+    def writeTcx(self, filename):
         # Write Garmin's TCX file
         
         out = SimpleXMLElement("<TrainingCenterDatabase />")
@@ -56,7 +56,7 @@ class Workout(object):
         #
         # HEADERS
         #
-        course.add_child("Name", self.xml.WorkoutName)
+        course.add_child("Name", unicode(self.xml.WorkoutName))
 
         lap = course.add_child("Lap")
         # Total
@@ -105,7 +105,7 @@ class Workout(object):
         track = course.add_child("Track")
         #non ISO for now
         #start = datetime.strptime(str(self.xml.StartDateTime), "%Y-%m-%dT%H:%M:%S")
-        start = datetime.strptime(str(self.xml.StartDateTime), "%Y-%m-%dT%H:%M:%S")
+        start = datetime.datetime.strptime(str(self.xml.StartDateTime), "%Y-%m-%dT%H:%M:%S")
 
         for point in self.xml.CompletedWorkoutDataPoints.CompletedWorkoutDataPoint:
             trackpoint = track.add_child("Trackpoint")
@@ -148,6 +148,8 @@ class Workout(object):
             cadence.add_attribute("SourceSensor", "Footpod")
             cadence.add_child("RunCadence", point.StrideRate)
 
+        with open(filename, 'w') as f:
+            f.write(out.as_xml(pretty=True))
     
 class WorkoutList(object):
     

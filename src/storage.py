@@ -10,6 +10,7 @@ class Storage(object):
         
         self.csvFolder = os.path.split(config['data']['csv_path'])[0].format(username=self.username)
         self.xmlFolder = os.path.split(config['data']['xml_path'])[0].format(username=self.username)
+        self.tcxFolder = os.path.split(config['data']['tcx_path'])[0].format(username=self.username)
         
         self.checkFolder()
     
@@ -19,6 +20,9 @@ class Storage(object):
         
         if config['data'].as_bool('save_xml') and not os.path.exists(self.xmlFolder):
                 os.makedirs(self.xmlFolder)
+        
+        if config['data'].as_bool('save_tcx') and not os.path.exists(self.tcxFolder):
+                os.makedirs(self.tcxFolder)
     
     def compareWorkoutList(self, woList):
         """returns ids of workout *not* present in storage folder
@@ -50,3 +54,7 @@ class Storage(object):
 
         if config['data'].as_bool('save_xml'):
             workout.writeXml(config['data']['xml_path'].format(username=self.username, id=workout.id, date=workout.date.strftime("%Y-%m-%d %H-%M-%S"), name=workout.name))
+        
+        if config['data'].as_bool('save_tcx'):
+            workout.writeTcx(config['data']['tcx_path'].format(username=self.username, id=workout.id, date=workout.date.strftime("%Y-%m-%d %H-%M-%S"), name=workout.name))
+        
