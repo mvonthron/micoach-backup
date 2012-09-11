@@ -57,6 +57,15 @@ save_xml = True
 #  - {name} Name of the workout
 xml_path = data/{username}/xml/{date} - {name}.xml
 
+# Save as Garmin TCX file
+save_tcx = False
+# Storage path for TCX files
+# Available fields:
+#  - {username} Your username on miCoach website
+#  - {date} Date of the workout
+#  - {name} Name of the workout
+tcx_path = data/{username}/tcx/{date} - {name}.tcx
+
 [network]
 # Not yet implemented
 #use_https = false
