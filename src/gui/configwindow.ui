@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>481</width>
-    <height>261</height>
+    <height>318</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -31,7 +31,7 @@
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="accountTab">
       <attribute name="title">
@@ -180,6 +180,33 @@
        <item row="4" column="1">
         <widget class="QLineEdit" name="xmlPathLine"/>
        </item>
+       <item row="5" column="1">
+        <widget class="QCheckBox" name="saveTcxBox">
+         <property name="text">
+          <string/>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="1">
+        <widget class="QLineEdit" name="tcxPathLine"/>
+       </item>
+       <item row="5" column="0">
+        <widget class="QLabel" name="saveTcxLabel">
+         <property name="text">
+          <string>Save TCX</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0">
+        <widget class="QLabel" name="tcxPathLabel">
+         <property name="text">
+          <string>TCX path</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
     </widget>
@@ -207,8 +234,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>236</x>
-     <y>251</y>
+     <x>245</x>
+     <y>308</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
@@ -223,8 +250,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>304</x>
-     <y>251</y>
+     <x>313</x>
+     <y>308</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>
@@ -277,6 +304,22 @@
     <hint type="destinationlabel">
      <x>151</x>
      <y>182</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>saveTcxBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>tcxPathLine</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>139</x>
+     <y>222</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>195</x>
+     <y>251</y>
     </hint>
    </hints>
   </connection>

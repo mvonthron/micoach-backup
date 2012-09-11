@@ -107,6 +107,12 @@ class ConfigUI(QtGui.QDialog):
         self.ui.xmlPathLine.setText(self.config['data']['xml_path'])
         self.ui.xmlPathLine.setToolTip(format_comment(config['data'].comments['xml_path']))
         
+        self.ui.saveTcxBox.setChecked(self.config['data'].as_bool('save_tcx'))
+        self.ui.saveTcxBox.setToolTip(format_comment(config['data'].comments['save_tcx']))
+        
+        self.ui.tcxPathLine.setText(self.config['data']['tcx_path'])
+        self.ui.tcxPathLine.setToolTip(format_comment(config['data'].comments['tcx_path']))
+        
     def saveFromUI(self):
         # account tab
         self.config['user']['email'] = self.ui.emailLine.text()

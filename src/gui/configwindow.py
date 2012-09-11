@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'configwindow.ui'
+# Form implementation generated from reading ui file 'gui/configwindow.ui'
 #
-# Created: Sun Jul 15 00:27:50 2012
+# Created: Mon Sep 10 22:35:20 2012
 #      by: pyside-uic 0.2.13 running on PySide 1.1.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -12,7 +12,7 @@ from PySide import QtCore, QtGui
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(481, 261)
+        Dialog.resize(481, 318)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/images/icon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         Dialog.setWindowIcon(icon)
@@ -87,6 +87,20 @@ class Ui_Dialog(object):
         self.xmlPathLine = QtGui.QLineEdit(self.dataTab)
         self.xmlPathLine.setObjectName("xmlPathLine")
         self.formLayout.setWidget(4, QtGui.QFormLayout.FieldRole, self.xmlPathLine)
+        self.saveTcxBox = QtGui.QCheckBox(self.dataTab)
+        self.saveTcxBox.setText("")
+        self.saveTcxBox.setChecked(True)
+        self.saveTcxBox.setObjectName("saveTcxBox")
+        self.formLayout.setWidget(5, QtGui.QFormLayout.FieldRole, self.saveTcxBox)
+        self.tcxPathLine = QtGui.QLineEdit(self.dataTab)
+        self.tcxPathLine.setObjectName("tcxPathLine")
+        self.formLayout.setWidget(6, QtGui.QFormLayout.FieldRole, self.tcxPathLine)
+        self.saveTcxLabel = QtGui.QLabel(self.dataTab)
+        self.saveTcxLabel.setObjectName("saveTcxLabel")
+        self.formLayout.setWidget(5, QtGui.QFormLayout.LabelRole, self.saveTcxLabel)
+        self.tcxPathLabel = QtGui.QLabel(self.dataTab)
+        self.tcxPathLabel.setObjectName("tcxPathLabel")
+        self.formLayout.setWidget(6, QtGui.QFormLayout.LabelRole, self.tcxPathLabel)
         self.tabWidget.addTab(self.dataTab, "")
         self.verticalLayout.addWidget(self.tabWidget)
         self.buttonBox = QtGui.QDialogButtonBox(Dialog)
@@ -104,12 +118,13 @@ class Ui_Dialog(object):
         self.xmlPathLabel.setBuddy(self.xmlPathLine)
 
         self.retranslateUi(Dialog)
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(1)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("accepted()"), Dialog.accept)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("rejected()"), Dialog.reject)
         QtCore.QObject.connect(self.saveCsvBox, QtCore.SIGNAL("toggled(bool)"), self.csvPathLine.setEnabled)
         QtCore.QObject.connect(self.saveCsvBox, QtCore.SIGNAL("toggled(bool)"), self.csvFormatLine.setEnabled)
         QtCore.QObject.connect(self.saveXmlBox, QtCore.SIGNAL("toggled(bool)"), self.xmlPathLine.setEnabled)
+        QtCore.QObject.connect(self.saveTcxBox, QtCore.SIGNAL("toggled(bool)"), self.tcxPathLine.setEnabled)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
     def retranslateUi(self, Dialog):
@@ -125,6 +140,8 @@ class Ui_Dialog(object):
         self.csvFormatLabel.setText(QtGui.QApplication.translate("Dialog", "CSV lines format    ", None, QtGui.QApplication.UnicodeUTF8))
         self.saveXmlBox_2.setText(QtGui.QApplication.translate("Dialog", "Save raw XML", None, QtGui.QApplication.UnicodeUTF8))
         self.xmlPathLabel.setText(QtGui.QApplication.translate("Dialog", "XML path", None, QtGui.QApplication.UnicodeUTF8))
+        self.saveTcxLabel.setText(QtGui.QApplication.translate("Dialog", "Save TCX", None, QtGui.QApplication.UnicodeUTF8))
+        self.tcxPathLabel.setText(QtGui.QApplication.translate("Dialog", "TCX path", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.dataTab), QtGui.QApplication.translate("Dialog", "Data", None, QtGui.QApplication.UnicodeUTF8))
 
 import images_rc
