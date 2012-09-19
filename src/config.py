@@ -136,6 +136,9 @@ class ConfigUI(QtGui.QDialog):
         self.config['data']['save_xml'] = self.ui.saveXmlBox.isChecked()
         self.config['data']['xml_path'] = self.ui.xmlPathLine.text()
         
+        self.config['data']['save_tcx'] = self.ui.saveTcxBox.isChecked()
+        self.config['data']['tcx_path'] = self.ui.tcxPathLine.text()
+        
         self.config.write()
         
         self.config.reload()
