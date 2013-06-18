@@ -11,9 +11,10 @@ class miCoachService(object):
     authcookie = ""
     
     def __init__(self, service, email=None, password=None):
-        self.location = ("/v2.0/Services/%s") % service
-        self.http = httplib.HTTPConnection("www.micoach.com")
-
+        self.location = ("/Services/%s") % service
+        self.http = httplib.HTTPConnection("micoach.adidas.com")
+        #httplib.HTTPConnection.debuglevel = 1
+        
         if not miCoachService.isconnected:
             if not email or not password:
                 raise MissingCredential()
@@ -26,11 +27,19 @@ class miCoachService(object):
 
     def call(self, method, *args, **kwargs):
         if miCoachService.isconnected:
+            xml = SimpleXMLElement()
             try:
                 data = self.GET(method, **kwargs)
-                return SimpleXMLElement(data)
+                xml = SimpleXMLElement(data)
             except Exception as e:
                 print e.strerror
+            
+            if int(xml.ResultStatusCode) == 0:
+                return xml
+            elif int(xml.ResultStatusCode) == 1001:
+                raise SessionTimeout()
+            elif int(xml.ResultStatusCode) == 1002:
+                raise NotAuthenticated()
 
     
     def GET(self, action, *args, **kwargs):
@@ -57,13 +66,13 @@ class miCoachService(object):
         http_authcookie = https.getresponse().getheader('set-cookie')
         
         params = urllib.urlencode({'password': password, 'email': email})
-        self.http.request("GET", "/v2.0/Services/UserProfileWs.asmx/Login?"+params, headers={'cookie':http_authcookie})
+        self.http.request("GET", "/Services/UserProfileWs.asmx/Login?"+params)#, headers={'cookie':http_authcookie})
         response = self.http.getresponse()
         xml = SimpleXMLElement(text=response.read())
-
+        
         if str(xml.ResultStatusMessage) == "SUCCESS":
             log.info("Login successful: (%s)", xml.ScreenName)
-            miCoachService.authcookie =  response.getheader('set-cookie')
+            miCoachService.authcookie = filter(lambda item: "micoach_authtoken" in item, response.getheader('set-cookie').split())[0]
             miCoachService.isconnected = True
         else:
             log.warning("Login failed: %s", xml.ResultStatusMessage)
