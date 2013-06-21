@@ -221,7 +221,7 @@ class MainWindow(QtGui.QMainWindow):
             self.ui.previousButton.setVisible(True)
             self.ui.nextButton.setText("Next")
 
-            if not self.user.workoutList:
+            if self.user.workoutList is None:
                 self.ui.chooseInstructionsIcon.setShown(True)
                 self.ui.chooseInstructionsLabel.setText("Loading list of workouts")
             else:
