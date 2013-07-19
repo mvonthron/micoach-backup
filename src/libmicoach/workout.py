@@ -16,7 +16,8 @@ class Workout(object):
                 except:
                     pass
 
-            self.date = datetime.datetime.strptime(str(self.xml.StartDateTime), "%Y-%m-%dT%H:%M:%S")
+            d = str(self.xml.StartDateTime).split('.')
+            self.date = datetime.datetime.strptime(d[0], "%Y-%m-%dT%H:%M:%S")
             self.name = self.xml.WorkoutName
 
         else:
@@ -104,8 +105,8 @@ class Workout(object):
         #
         track = course.add_child("Track")
         #non ISO for now
-        #start = datetime.strptime(str(self.xml.StartDateTime), "%Y-%m-%dT%H:%M:%S")
-        start = datetime.datetime.strptime(str(self.xml.StartDateTime), "%Y-%m-%dT%H:%M:%S")
+        d = str(self.xml.StartDateTime).split('.')
+        start = datetime.datetime.strptime(d[0], "%Y-%m-%dT%H:%M:%S")
 
         for point in self.xml.CompletedWorkoutDataPoints.CompletedWorkoutDataPoint:
             trackpoint = track.add_child("Trackpoint")
@@ -159,25 +160,31 @@ class WorkoutList(object):
         # try with SimpleXmlElement from WorkoutLog
         try:
             for w in data.WorkoutLog:
-                start = datetime.datetime.strptime(str(w.StartDate), "%Y-%m-%dT%H:%M:%S")
-                end   = datetime.datetime.strptime(str(w.StopDate), "%Y-%m-%dT%H:%M:%S")
+                try: 
+                    # splitting date to handle microsec
+                    d = str(w.StartDate).split('.')
+                    start = datetime.datetime.strptime(d[0], "%Y-%m-%dT%H:%M:%S")
+                    d = str(w.StopDate).split('.')
+                    end   = datetime.datetime.strptime(d[0], "%Y-%m-%dT%H:%M:%S")
 
-                d = int(w.Distance.Value)
-                if d > 1000:
-                    distance = "%.1f km" % (d/1000.)
-                else:
-                    distance = "%d m" % d
-                
-                self.content.append({'id': int(w.WorkoutId), 
-                                     'name': str(w.Name), 
-                                     'date': str(start), 
-                                     'activity': str(w.ActivityType), 
-                                     'type': str(w.CompletedWorkoutType),
-                                     'time': str(end-start),
-                                     'distance': distance,
-                                     'hr': int(w.AvgHR.Value),
-                                     'pace': float(w.AvgPace.Value)
-                                     })
+                    d = int(w.Distance.Value)
+                    if d > 1000:
+                        distance = "%.1f km" % (d/1000.)
+                    else:
+                        distance = "%d m" % d
+                    
+                    self.content.append({'id': int(w.WorkoutId), 
+                                         'name': str(w.Name), 
+                                         'date': str(start), 
+                                         'activity': str(w.ActivityType), 
+                                         'type': str(w.CompletedWorkoutType),
+                                         'time': str(end-start),
+                                         'distance': distance,
+                                         'hr': int(w.AvgHR.Value),
+                                         'pace': float(w.AvgPace.Value)
+                                         })
+                except:
+                    pass
         except:
             pass
 
