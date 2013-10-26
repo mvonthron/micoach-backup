@@ -12,6 +12,7 @@ class ChoiceTable(QtGui.QTableWidget):
         
         self.setColumnCount(6)
         self.checkAllBox = QtGui.QCheckBox(self.horizontalHeader())
+        self.checkAllBox.stateChanged.connect(self.checkUncheckAll)
         self.setHorizontalHeaderItem(0, QtGui.QTableWidgetItem())
         self.setHorizontalHeaderItem(1, QtGui.QTableWidgetItem())
         self.setHorizontalHeaderItem(2, QtGui.QTableWidgetItem())
@@ -59,6 +60,10 @@ class ChoiceTable(QtGui.QTableWidget):
                 checked.append(int(self.item(line, 5).text()))
         
         return checked
+
+    def checkUncheckAll(self, check):
+        for line in range(self.rowCount()):
+            self.item(line, 0).setCheckState(QtCore.Qt.CheckState(check))
 
     def resizeEvent(self, event=None):
         super(QtGui.QTableWidget, self).resizeEvent(event)
