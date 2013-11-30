@@ -1,9 +1,10 @@
 from distutils.core import setup
 import py2exe
+from config import VERSION
 
 setup(
     name = "miCoach backup",
-    version = "1.1.2",
+    version = VERSION,
     description = "Tool to save your workouts from Adidas miCoach to your computer",
     author = "Manuel Vonthron",
     author_email = "manuel.vonthron@acadis.org",
@@ -13,8 +14,8 @@ setup(
     windows = [{
         "script": "micoach-backup",
         "icon_resources": [(0, "icon.ico")],
-        "copyright": "Copyright (c) 2012, Manuel Vonthron",
-        "version": "1.1.2",
+        "copyright": "Copyright (c) 2013, Manuel Vonthron",
+        "version": VERSION,
     }],
     zipfile = None,
     options = {

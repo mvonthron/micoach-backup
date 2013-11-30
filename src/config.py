@@ -7,7 +7,9 @@ except ImportError:
     sys.exit(1)
 
 from gui.configwindow import Ui_Dialog
-    
+
+VERSION = "1.1.4"
+
 DEFAULT_CONFIG_FILENAME = "micoach-backup.conf"
 
 DEFAULT_CONFIG_CONTENT = """# miCoach backup

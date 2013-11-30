@@ -82,7 +82,17 @@ class Workout(object):
                 lap.add_child("Intensity", "Active")
         except AttributeError:
             lap.add_child("Intensity", "Active")
-            
+        
+        # has HR values?
+        if self.xml.AvgHR.Value and int(self.xml.AvgHR.Value) > 0:
+            hasHR = True
+        else:
+            hasHR = False
+        
+        if hasHR:
+            lap.add_child("AverageHeartRateBpm").add_child("Value", self.xml.AvgHR.Value)
+            lap.add_child("MaximumHeartRateBpm").add_child("Value", self.xml.PeakHR.Value)
+        
         track = lap.add_child("Track")
         for point in self.xml.CompletedWorkoutDataPoints.CompletedWorkoutDataPoint:
             trackpoint = track.add_child("Trackpoint")
@@ -109,18 +119,19 @@ class Workout(object):
                 trackpoint.add_child("AltitudeMeters", alt)
             
             trackpoint.add_child("DistanceMeters", point.Distance)
-            trackpoint.add_child("HeartRateBpm").add_child("Value", point.HeartRate)
+            if hasHR:
+                trackpoint.add_child("HeartRateBpm").add_child("Value", point.HeartRate)
 
             # Extensions
             if point.Calories or point.StrideRate:
                 trackpoint.add_child("Extensions")
                 
-            if point.Calories:
+            if point.Calories and int(point.Calories) > 0:
                 calories = trackpoint.Extensions.add_child("FatCalories")
                 calories.add_attribute("xmlns", "http://www.garmin.com/xmlschemas/FatCalories/v1")
                 calories.add_child("Value", point.Calories)
             
-            if point.StrideRate:
+            if point.StrideRate and int(point.StrideRate) > 0:
                 cadence = trackpoint.Extensions.add_child("TPX")
                 cadence.add_attribute("xmlns", "http://www.garmin.com/xmlschemas/ActivityExtension/v2")
                 cadence.add_attribute("SourceSensor", "Footpod")
