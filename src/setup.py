@@ -13,7 +13,7 @@ setup(
     # py2exe
     windows = [{
         "script": "micoach-backup",
-        "icon_resources": [(0, "icon.ico")],
+        "icon_resources": [(0, "gui/images/icon.ico")],
         "copyright": "Copyright (c) 2013, Manuel Vonthron",
         "version": VERSION,
     }],
