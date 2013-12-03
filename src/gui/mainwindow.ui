@@ -77,7 +77,7 @@
         <item row="0" column="0" colspan="2">
          <widget class="QLabel" name="connectInstructionsLabel">
           <property name="text">
-           <string>Please enter your login informations</string>
+           <string>Please enter your login information</string>
           </property>
          </widget>
         </item>
@@ -138,7 +138,7 @@
            <string>Save my infos and sign in at startup</string>
           </property>
           <property name="text">
-           <string>connect at startup</string>
+           <string>Remember and connect at startup</string>
           </property>
          </widget>
         </item>
