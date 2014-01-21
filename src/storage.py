@@ -3,6 +3,10 @@ log = logging.getLogger(__name__)
 
 import os
 from config import config
+from unicodedata import normalize
+
+AllowedChars = u' ()[]_-+.'
+Sanitize = lambda x: ''.join(c for c in normalize('NFKD', x.decode("utf8", "ignore")).encode("ascii", "ignore") if c.isalnum() or c in AllowedChars)
 
 class Storage(object):
     def __init__(self, username):
@@ -41,7 +45,7 @@ class Storage(object):
             targetPath = os.path.split(config['data']['csv_path'])[-1]
             targetFolder = self.csvFolder
             
-        argList = [(w['id'], targetPath.format(username=self.username, id=w['id'], date=w['date'].replace(":", "-"), name=w['name'])) for w in woList]
+        argList = [(w['id'], targetPath.format(username=self.username, id=w['id'], date=w['date'].replace(":", "-"), name=Sanitize(str(w['name'])))) for w in woList]
         folderList = os.listdir(targetFolder)
         
         return [id for id, name in argList if name not in folderList]
@@ -49,13 +53,16 @@ class Storage(object):
         
     def addWorkout(self, workout, check_exists=False):
         self.checkFolder()
+        _name = Sanitize(str(workout.name))
+        _date = workout.date.strftime("%Y-%m-%d %H-%M-%S")
+        
         if config['data'].as_bool('save_csv'):
-            workout.writeCsv(config['data']['csv_path'].format(username=self.username, id=workout.id, date=workout.date.strftime("%Y-%m-%d %H-%M-%S"), name=workout.name),
+            workout.writeCsv(config['data']['csv_path'].format(username=self.username, id=workout.id, date=_date, name=_name),
                              config['data']['csv_format'])
 
         if config['data'].as_bool('save_xml'):
-            workout.writeXml(config['data']['xml_path'].format(username=self.username, id=workout.id, date=workout.date.strftime("%Y-%m-%d %H-%M-%S"), name=workout.name))
+            workout.writeXml(config['data']['xml_path'].format(username=self.username, id=workout.id, date=_date, name=_name))
         
         if config['data'].as_bool('save_tcx'):
-            workout.writeTcx(config['data']['tcx_path'].format(username=self.username, id=workout.id, date=workout.date.strftime("%Y-%m-%d %H-%M-%S"), name=workout.name))
+            workout.writeTcx(config['data']['tcx_path'].format(username=self.username, id=workout.id, date=_date, name=_name))
         
