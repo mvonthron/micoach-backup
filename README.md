@@ -1,14 +1,16 @@
 miCoach Backup
 =====
 
-**miCoach backup** is a tool to save your workouts from [Adidas miCoach] to your computer.
+**miCoach backup** ~~is~~ was a tool to save your workouts from [Adidas miCoach] to your computer.
+
+Adidas as since shut down *miCoach* (which makes this tool both retrospectively usefull and unusable now). You can still migrate your data to Runtastic (that Adidas bought) by following the instruction here: https://www.runtastic.com/import/runtastic/adidas.
 
 Description
 ----
 
 **miCoach backup** contains two things:
 
-  - the beginning of a Python implementation of *Adidas miCoach* API 
+  - a Python implementation of *Adidas miCoach* API 
   - a small GUI for selecting and saving you workouts
 
 
@@ -42,9 +44,9 @@ Screenshot
 What else
 ----
 
-**miCoach backup** is being actively developped but is ready for use.
+**miCoach backup** is not longer developped, nor usable since Adidas shut down the servers.
 
-The API let's you do pretty much everything the [website](http://www.micoach.com/) can do and even a lot more. So far you will only be able to save your workouts on you computer.
+The SOAP API let's you do pretty much everything the [website](http://www.micoach.com/) can do and even a lot more. So far you will only be able to save your workouts on you computer.
 
 Licensing
 ---------
